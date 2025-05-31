@@ -31,4 +31,25 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## Deployment Details
 
-In Progress...
+* Modeling Data
+  * [ ] User
+  * [ ] Staff
+  * [ ] Ship
+  * [ ] Schedule
+* Data Acess Layer
+  * [ ] Read
+  * [ ] Modify
+* Pages
+  * [ ] Auth
+  * [ ] TopView (Schedule)
+  * [ ] Staff Manage
+  * [ ] Staff Details
+  * [ ] Ship Manage
+  * [ ] Ship Details
+  * [ ] Calculate Payroll
+
+### Main Functionalities
+
+1. Keep track of the boarding and unboarding of staff.
+2. View past, current and future schedule.
+3. Calculate staff payroll.
