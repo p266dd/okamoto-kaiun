@@ -69,3 +69,52 @@ model Verification {
 
   @@map("verification")
 }
+
+model Staff {
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String? // Optional
+  phone     String? // Optional
+  role      String
+  salary    Int
+  code      String
+  isActive  Boolean @default(true)
+
+  ship   Ship?   @relation(fields: [shipId], references: [id])
+  shipId String? // Optional
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([code, email, phone])
+  @@map("staff")
+}
+
+model Ship {
+  id     String @id @default(cuid())
+  name   String @unique
+  status String
+
+  staff    Staff[]
+  schedule Schedule[]
+
+  @@map("ship")
+}
+
+model Schedule {
+  id          String   @id @default(cuid())
+  description String?
+  start       DateTime
+  finish      DateTime
+  embark      String
+  desembark   String
+
+  ship   Ship?   @relation(fields: [shipId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  shipId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("schedule")
+}

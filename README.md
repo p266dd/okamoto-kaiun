@@ -1,13 +1,10 @@
 ## Getting Started
 
-<div style="background-color: #007aff; padding: 30px;">
-<p style="text-align: center; display: block;">
+<div>
   <a href="https://okamotokaiun.com">
-    <img src="https://raw.githubusercontent.com/p266dd/okamoto-kaiun/refs/heads/main/public/company_logo.png" alt="Okamoto Kaiun Logo" width="150" />
+    <img src="https://raw.githubusercontent.com/p266dd/okamoto-kaiun/refs/heads/main/public/okamoto-brand-github.webp" alt="Okamoto Kaiun Logo" width="150" />
   </a>
-</p>
 </div>
-<div style="height: 80px; margin-bottom: 40px; background-image= url('https://raw.githubusercontent.com/p266dd/okamoto-kaiun/refs/heads/main/public/footer_wave.png')"></div>
 
 This project was built using [Next.js](https://nextjs.org/), [TypeScript](https://www.typescriptlang.org/), [Better Auth](https://github.com/better-auth/better-auth), [Prisma](https://www.prisma.io/) and [Tailwind CSS](https://tailwindcss.com/).
 
@@ -31,22 +28,22 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## Deployment Details
 
-* Modeling Data
-  * [ ] User
-  * [ ] Staff
-  * [ ] Ship
-  * [ ] Schedule
-* Data Acess Layer
-  * [ ] Read
-  * [ ] Modify
-* Pages
-  * [ ] Auth
-  * [ ] TopView (Schedule)
-  * [ ] Staff Manage
-  * [ ] Staff Details
-  * [ ] Ship Manage
-  * [ ] Ship Details
-  * [ ] Calculate Payroll
+- Modeling Data
+  - [x] User
+  - [x] Staff
+  - [x] Ship
+  - [x] Schedule
+- Data Acess Layer
+  - [ ] Read
+  - [ ] Modify
+- Pages
+  - [ ] Auth
+  - [ ] TopView (Schedule)
+  - [ ] Staff Manage
+  - [ ] Staff Details
+  - [ ] Ship Manage
+  - [ ] Ship Details
+  - [ ] Calculate Payroll
 
 ### Main Functionalities
 
