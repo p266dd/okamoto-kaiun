@@ -6,9 +6,9 @@
   </a>
 </div>
 
-This project was built using [Next.js](https://nextjs.org/), [TypeScript](https://www.typescriptlang.org/), [Better Auth](https://github.com/better-auth/better-auth), [Prisma](https://www.prisma.io/) and [Tailwind CSS](https://tailwindcss.com/).
+This project was built using [Next.js](https://nextjs.org/), [TypeScript](https://www.typescriptlang.org/), [Prisma](https://www.prisma.io/) and [Tailwind CSS](https://tailwindcss.com/).
 
-To get started with the development environment, please make sure to install the required dependencies. Then rename the `.env-example` file to `.env` and run the following commands:
+To get started with the development environment, please make sure to install the required dependencies. Then rename the `.env-example` file to `.env` and add the provided details, then run the following commands:
 
 ```bash
 # Install dependencies
@@ -34,15 +34,14 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
   - [x] Ship
   - [x] Schedule
 - Data Acess Layer
-  - [ ] Read
-  - [ ] Modify
+  - [x] Read
+  - [x] Modify
 - Pages
-  - [ ] Auth
+  - [x] Auth Session
+  - [ ] Auth Screens
   - [ ] TopView (Schedule)
   - [ ] Staff Manage
-  - [ ] Staff Details
   - [ ] Ship Manage
-  - [ ] Ship Details
   - [ ] Calculate Payroll
 
 ### Main Functionalities
