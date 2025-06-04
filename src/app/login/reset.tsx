@@ -9,12 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 // Types and Interfaces
-import { ActionState } from "./page";
+import { ActionState } from "./actions";
 
-export default function RecoverForm({
+export default function ResetPasswordForm({
   action,
+  token,
 }: {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
+  token: String;
 }) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(action, {});
@@ -24,16 +26,24 @@ export default function RecoverForm({
       <form action={formAction} className="p-6 md:p-8">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">Recover Password</h1>
+            <h1 className="text-2xl font-bold">New Password!</h1>
             <p className="text-muted-foreground text-balance"></p>
           </div>
           <div className="grid gap-3">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="name@email.com" required />
+            <div className="flex items-center">
+              <Label htmlFor="password">Password</Label>
+            </div>
+            <Input id="password" type="password" placeholder="••••••••" required />
           </div>
 
+          <div className="grid gap-3">
+            <div className="flex items-center">
+              <Label htmlFor="password2">Re-Type Password</Label>
+            </div>
+            <Input id="password2" type="password" placeholder="••••••••" required />
+          </div>
           <Button type="submit" className="w-full">
-            Send Recovery Code
+            Save New Password
           </Button>
         </div>
       </form>
