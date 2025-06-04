@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 // Types and Interfaces
-import { ActionState } from "./page";
+import { ActionState } from "./actions";
 
 export default function RecoverForm({
   action,
@@ -29,7 +29,7 @@ export default function RecoverForm({
           </div>
           <div className="grid gap-3">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="name@email.com" required />
+            <Input id="email" name="email" type="email" placeholder="name@email.com" required />
           </div>
 
           <Button type="submit" className="w-full">

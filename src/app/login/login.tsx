@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Ghost, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 
 // Types and Interfaces
 import { ActionState } from "./actions";
@@ -31,7 +31,7 @@ export default function LoginForm({
           </div>
           <div className="grid gap-3">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="name@email.com" required />
+            <Input id="email" name="email" type="email" placeholder="name@email.com" required />
           </div>
           <div className="grid gap-3">
             <div className="flex items-center">
@@ -43,7 +43,7 @@ export default function LoginForm({
                 Forgot your password?
               </button>
             </div>
-            <Input id="password" type="password" placeholder="••••••••" required />
+            <Input id="password" name="password" type="password" placeholder="••••••••" required />
           </div>
           <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
             Login
