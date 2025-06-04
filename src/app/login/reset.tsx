@@ -7,16 +7,18 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Info, Lock } from "lucide-react";
 
 // Types and Interfaces
 import { ActionState } from "./actions";
 
 export default function ResetPasswordForm({
   action,
-  token,
+  id,
 }: {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
-  token: string;
+  id: string | null;
 }) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(action, {});
@@ -33,18 +35,38 @@ export default function ResetPasswordForm({
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
             </div>
-            <Input id="password" type="password" placeholder="••••••••" required />
+            <input type="hidden" name="id" value={id ? id : ""} />
+            <Input id="password" name="password" type="password" placeholder="••••••••" required />
           </div>
 
           <div className="grid gap-3">
             <div className="flex items-center">
-              <Label htmlFor="password2">Re-Type Password</Label>
+              <Label htmlFor="confirmPassword">Re-Type Password</Label>
             </div>
-            <Input id="password2" type="password" placeholder="••••••••" required />
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              placeholder="••••••••"
+              required
+            />
           </div>
-          <Button type="submit" className="w-full">
+          <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
             Save New Password
           </Button>
+
+          {state?.success && (
+            <Alert className="bg-blue-50">
+              <Info />
+              <AlertTitle>{state.success}</AlertTitle>
+            </Alert>
+          )}
+          {state?.error && (
+            <Alert variant="destructive" className="bg-red-50">
+              <Lock />
+              <AlertTitle>{state.error}</AlertTitle>
+            </Alert>
+          )}
         </div>
       </form>
     </>

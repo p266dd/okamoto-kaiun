@@ -13,7 +13,8 @@ import EmbarkForm from "./embark";
 
 // Actions and Types
 import { LoginAction, RecoverAction, ResetAction, EmbarkAction, SearchParams } from "./actions";
-import { SafeParseError, SafeParseSuccess } from "zod";
+import { decrypt } from "@/lib/jwt";
+import { JWTPayload } from "jose";
 
 export function LoginPageLayout({ children }: { children: React.ReactNode }): React.ReactElement {
   return (
@@ -45,12 +46,18 @@ export default async function LoginPage(props: { searchParams: SearchParams }) {
   const tokenSchema = z
     .string()
     .length(60, { message: "Token must be valid." })
-    .regex(/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/, {
+    .regex(/^((?:\.?(?:[A-Za-z0-9-_]+)){3})$/, {
       message: "Token must be a valid hash.",
     });
 
   const validatedAction = actionSchema.safeParse(action);
   const validateToken = tokenSchema.safeParse(token);
+
+  let decryptToken: JWTPayload | undefined = undefined;
+  if (validateToken.success) {
+    // Decrypt token if it exists.
+    decryptToken = await decrypt(validateToken.data);
+  }
 
   switch (validatedAction?.data) {
     case "recover":
@@ -63,7 +70,10 @@ export default async function LoginPage(props: { searchParams: SearchParams }) {
     case "reset":
       return (
         <LoginPageLayout>
-          <ResetPasswordForm action={ResetAction} token={`${validateToken.data}`} />
+          <ResetPasswordForm
+            action={ResetAction}
+            id={decryptToken ? String(decryptToken.id) : null}
+          />
         </LoginPageLayout>
       );
 

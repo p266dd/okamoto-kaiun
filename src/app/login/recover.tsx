@@ -7,6 +7,8 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Info, Lock } from "lucide-react";
 
 // Types and Interfaces
 import { ActionState } from "./actions";
@@ -16,7 +18,6 @@ export default function RecoverForm({
 }: {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
 }) {
-  const router = useRouter();
   const [state, formAction, isPending] = useActionState(action, {});
 
   return (
@@ -32,9 +33,22 @@ export default function RecoverForm({
             <Input id="email" name="email" type="email" placeholder="name@email.com" required />
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
             Send Recovery Code
           </Button>
+
+          {state?.success && (
+            <Alert className="bg-blue-50">
+              <Info />
+              <AlertTitle>{state.success}</AlertTitle>
+            </Alert>
+          )}
+          {state?.error && (
+            <Alert variant="destructive" className="bg-red-50">
+              <Lock />
+              <AlertTitle>{state.error}</AlertTitle>
+            </Alert>
+          )}
         </div>
       </form>
     </>
