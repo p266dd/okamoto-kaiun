@@ -39,7 +39,8 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 - Pages
   - [x] Auth Session
   - [x] Auth Screens
-    - [ ] Sanitize Params
+    - [x] Sanitize Params
+  - [ ] Auth actions
   - [ ] TopView (Schedule)
   - [ ] Staff Manage
   - [ ] Ship Manage

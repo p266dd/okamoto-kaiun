@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { z } from "zod/v4";
 import CompanyLogo from "@/assets/company_logo.png";
 
 // Shadcn
@@ -12,6 +13,7 @@ import EmbarkForm from "./embark";
 
 // Actions and Types
 import { LoginAction, RecoverAction, ResetAction, EmbarkAction, SearchParams } from "./actions";
+import { SafeParseError, SafeParseSuccess } from "zod";
 
 export function LoginPageLayout({ children }: { children: React.ReactNode }): React.ReactElement {
   return (
@@ -35,12 +37,22 @@ export function LoginPageLayout({ children }: { children: React.ReactNode }): Re
 
 export default async function LoginPage(props: { searchParams: SearchParams }) {
   const getSearchParams = await props.searchParams;
-
-  // TODO: sanitize action and token.
   const action = getSearchParams?.action;
   const token = getSearchParams?.token;
 
-  switch (action) {
+  // Sanitize action and token.
+  const actionSchema = z.string().max(20, { message: "Action not available." });
+  const tokenSchema = z
+    .string()
+    .length(60, { message: "Token must be valid." })
+    .regex(/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/, {
+      message: "Token must be a valid hash.",
+    });
+
+  const validatedAction = actionSchema.safeParse(action);
+  const validateToken = tokenSchema.safeParse(token);
+
+  switch (validatedAction?.data) {
     case "recover":
       return (
         <LoginPageLayout>
@@ -51,7 +63,7 @@ export default async function LoginPage(props: { searchParams: SearchParams }) {
     case "reset":
       return (
         <LoginPageLayout>
-          <ResetPasswordForm action={ResetAction} token={`${token}`} />
+          <ResetPasswordForm action={ResetAction} token={`${validateToken.data}`} />
         </LoginPageLayout>
       );
 
