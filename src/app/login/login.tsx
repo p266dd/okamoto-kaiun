@@ -7,9 +7,11 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Ghost, Lock } from "lucide-react";
 
 // Types and Interfaces
-import { ActionState } from "./page";
+import { ActionState } from "./actions";
 
 export default function LoginForm({
   action,
@@ -17,7 +19,7 @@ export default function LoginForm({
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
 }) {
   const router = useRouter();
-  const [state, formAction, isPending] = useActionState(action, {});
+  const [state, formAction, isPending] = useActionState(action, { error: null, success: null });
 
   return (
     <>
@@ -43,9 +45,15 @@ export default function LoginForm({
             </div>
             <Input id="password" type="password" placeholder="••••••••" required />
           </div>
-          <Button type="submit" className="w-full">
+          <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
             Login
           </Button>
+          {state.error && (
+            <Alert variant="destructive" className="bg-red-50">
+              <Lock />
+              <AlertTitle>{state.error}</AlertTitle>
+            </Alert>
+          )}
         </div>
       </form>
     </>

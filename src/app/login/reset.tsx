@@ -16,7 +16,7 @@ export default function ResetPasswordForm({
   token,
 }: {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
-  token: String;
+  token: string;
 }) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(action, {});
