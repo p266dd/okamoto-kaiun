@@ -12,7 +12,7 @@ const staff: Staff[] = [
   { id: "1", name: "Dhavidy", schedules: ["1", "3"] },
   { id: "2", name: "Hiroko", schedules: ["2"] },
   { id: "3", name: "Senoo", schedules: ["2"] },
-  { id: "4", name: "Scooby", schedules: ["1"] },
+  { id: "4", name: "Scooby", schedules: ["1", "4", "5"] },
 ];
 
 export default async function Home() {

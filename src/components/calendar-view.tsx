@@ -11,7 +11,7 @@ import {
   isWithinInterval,
   isSameDay,
 } from "date-fns";
-import { Dot } from "lucide-react";
+import { ChevronLeft, ChevronRight, Dot, Loader } from "lucide-react";
 
 // Shadcn
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -32,6 +32,8 @@ const schedule = [
   { id: "1", start: "June 5th 2025", end: "June 7th 2025", staff: ["1"], status: "" },
   { id: "2", start: "June 1st 2025", end: "June 12th 2025", staff: ["3"], status: "" },
   { id: "3", start: "June 9th 2025", end: "June 20th 2025", staff: ["1"], status: "" },
+  { id: "4", start: "July 7th 2025", end: "August 20th 2025", staff: ["4"], status: "" },
+  { id: "5", start: "April 20th 2025", end: "June 3rd 2025", staff: ["4"], status: "" },
 ];
 
 export const CalendarView = ({ staff }: { staff: Staff[] }) => {
@@ -44,6 +46,8 @@ export const CalendarView = ({ staff }: { staff: Staff[] }) => {
     endDate: parse(item.end, "MMMM do yyyy", new Date()),
   }));
 
+  const [isLoadingNext, setIsLoadingNext] = useState<boolean>(false);
+  const [isLoadingPrev, setIsLoadingPrev] = useState<boolean>(false);
   const [hoveredColumnIndex, setHoveredColumnIndex] = useState<number | null>(null);
   const [displayedDays, setDisplayedDays] = useState<Date[]>(() => {
     const startDate = subDays(startOfDay(today), 5);
@@ -51,13 +55,49 @@ export const CalendarView = ({ staff }: { staff: Staff[] }) => {
     return eachDayOfInterval({ start: startDate, end: endDate });
   });
 
+  const loadPastDays = async () => {
+    // Wait to load before loading more.
+    if (isLoadingPrev || displayedDays.length === 0) return;
+    setIsLoadingPrev(true);
+
+    const firstDay = displayedDays[0];
+    const endDate = subDays(firstDay, 1);
+    const startDate = subDays(endDate, 7 - 1); // -1 because eachDayOfInterval is inclusive.
+
+    // Simulate network latency if needed
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const newDays = eachDayOfInterval({ start: startDate, end: endDate });
+    setDisplayedDays((prevDays) => [...newDays, ...prevDays]);
+    setIsLoadingPrev(false);
+  };
+
+  const loadfutureDays = async () => {
+    // Wait to load before loading more.
+    if (isLoadingNext || displayedDays.length === 0) return;
+    setIsLoadingNext(true);
+
+    const lastDay = displayedDays[displayedDays.length - 1];
+    const startDate = addDays(lastDay, 1);
+    const endDate = addDays(startDate, 14 - 1); // -1 because eachDayOfInterval is inclusive.
+
+    // Simulate network latency if needed
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const newDays = eachDayOfInterval({ start: startDate, end: endDate });
+    setDisplayedDays((prevDays) => [...prevDays, ...newDays]);
+    setIsLoadingNext(false);
+  };
+
   return (
     <div className="flex">
       <div className="shrink">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="bg-primary text-primary-foreground">Staff</TableHead>
+              <TableHead className="bg-primary text-primary-foreground border-l border-r border-slate-200">
+                Staff
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -72,7 +112,27 @@ export const CalendarView = ({ staff }: { staff: Staff[] }) => {
         </Table>
       </div>
 
-      <div className="w-3/4 flex-grow">
+      <div className="relative w-3/4 flex-grow">
+        <div
+          onClick={async () => await loadPastDays()}
+          className="absolute top-1/2 left-2 -translate-y-1/3 w-10 h-1/2 bg-slate-600/30 hover:bg-slate-600 z-50 rounded-full flex items-center justify-center cursor-pointer"
+        >
+          {isLoadingPrev ? (
+            <Loader className="stroke-white animate-spin" />
+          ) : (
+            <ChevronLeft className="stroke-white" />
+          )}
+        </div>
+        <div
+          onClick={async () => await loadfutureDays()}
+          className="absolute top-1/2 right-2 -translate-y-1/3 w-10 h-1/2 bg-slate-600/30 hover:bg-slate-600 z-50 rounded-full flex items-center justify-center cursor-pointer"
+        >
+          {isLoadingNext ? (
+            <Loader className="stroke-white animate-spin" />
+          ) : (
+            <ChevronRight className="stroke-white" />
+          )}
+        </div>
         <ScrollArea
           className="w-full whitespace-nowrap border bg-background"
           type="always"
@@ -96,7 +156,7 @@ export const CalendarView = ({ staff }: { staff: Staff[] }) => {
                     }`}
                   >
                     <div>{format(day, "EEE")}</div>
-                    <div>{format(day, "MMM io")}</div>
+                    <div>{format(day, "MMM do")}</div>
                   </TableHead>
                 ))}
               </TableRow>
