@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 
 // Shadcn
@@ -20,8 +19,7 @@ export default function ResetPasswordForm({
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
   id: string | null;
 }) {
-  const router = useRouter();
-  const [state, formAction, isPending] = useActionState(action, {});
+  const [state, formAction, isPending] = useActionState(action, { error: null, success: null });
 
   return (
     <>

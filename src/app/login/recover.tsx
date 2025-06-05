@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 
 // Shadcn
@@ -18,7 +17,7 @@ export default function RecoverForm({
 }: {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
 }) {
-  const [state, formAction, isPending] = useActionState(action, {});
+  const [state, formAction, isPending] = useActionState(action, { error: null, success: null });
 
   return (
     <>

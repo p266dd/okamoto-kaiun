@@ -48,7 +48,7 @@ export default function LoginForm({
           <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
             Login
           </Button>
-          {state.error && (
+          {state?.error && (
             <Alert variant="destructive" className="bg-red-50">
               <Lock />
               <AlertTitle>{state.error}</AlertTitle>
