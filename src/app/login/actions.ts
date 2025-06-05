@@ -1,7 +1,8 @@
 import { z } from "zod/v4";
-import { redirect, RedirectType } from "next/navigation";
-import { compareSync, hashSync } from "bcryptjs";
 import { SignJWT } from "jose";
+import { redirect, RedirectType } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { compareSync, hashSync } from "bcryptjs";
 import { createSession } from "@/lib/session";
 import { findUnique, update } from "@/lib/data-access";
 
@@ -61,7 +62,7 @@ export const LoginAction = async function (
     }
 
     // Create session.
-    const newSession = await createSession({
+    await createSession({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -129,6 +130,9 @@ export const RecoverAction = async function (
     // Send code to email.
     // TODO <==
 
+    // Refresh cache.
+    revalidatePath("/login");
+
     // Return message to be displayed.
     return { success: "We've sen't you a link to reset your password." };
   } catch (error) {
@@ -184,11 +188,14 @@ export const ResetAction = async function (
     }
 
     // Create session.
-    const newSession = await createSession({
+    await createSession({
       id: updateUser.id,
       name: updateUser.name,
       email: updateUser.email,
     });
+
+    // Refresh cache.
+    revalidatePath("/login");
 
     // Redirect user to top page.
     return redirect("/", RedirectType.push);
@@ -199,10 +206,75 @@ export const ResetAction = async function (
 };
 
 // 4. Embark Action.
+export interface EmbarkActionState extends ActionState {
+  staff?: {
+    name: string;
+    ship: string;
+    code: string;
+    status: boolean | false;
+  } | null;
+}
+
 export const EmbarkAction = async function (
-  prevState: ActionState,
+  prevState: EmbarkActionState,
   formData: FormData
-): Promise<ActionState> {
+): Promise<EmbarkActionState> {
   "use server";
-  return {};
+
+  // Get data.
+  const data = {
+    code: formData.get("code"),
+    status: formData.get("status") === "true",
+  };
+
+  // Create data schema.
+  const dataSchema = z.object({
+    code: z.string().length(6, { message: "Invalid code format." }),
+    status: z.boolean(),
+  });
+
+  // Validate data.
+  const validateSchema = dataSchema.safeParse(data);
+  if (!validateSchema.success) {
+    return { error: "Invalid code." };
+  }
+
+  const { code, status } = validateSchema.data;
+
+  // Fetch staff by its code number.
+  const user = await findUnique("user", {
+    where: { code: code },
+  });
+
+  if (!user) {
+    return { error: "Staff not found." };
+  }
+
+  if (!status) {
+    return {
+      staff: {
+        name: user.name,
+        ship: user.ship,
+        code: code,
+        status: status,
+      },
+    };
+  }
+
+  // Update User.
+  const updateUser = await update("user", { status: status }, { where: { id: user.id } });
+
+  // Refresh cache.
+  revalidatePath("/login");
+
+  // Return staff object and success message.
+  return {
+    success: "Thank you!",
+    staff: {
+      name: updateUser.name,
+      ship: updateUser.ship,
+      code: updateUser.code,
+      status: updateUser.status,
+    },
+  };
 };

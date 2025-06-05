@@ -31,6 +31,7 @@ model Staff {
   role      String
   salary    Int
   code      String
+  status    Boolean @default(false)
   isActive  Boolean @default(true)
 
   ship   Ship?   @relation(fields: [shipId], references: [id])
