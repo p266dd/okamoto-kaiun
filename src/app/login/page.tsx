@@ -51,7 +51,7 @@ export default async function LoginPage(props: { searchParams: SearchParams }) {
 
   const validateParams = paramsSchema.safeParse(paramsObject);
 
-  let decryptToken: JWTPayload | undefined = undefined;
+  let decryptToken: JWTPayload | null = null;
   if (validateParams.success && validateParams?.data?.token) {
     // Decrypt token if it exists.
     decryptToken = await decrypt(validateParams.data.token);

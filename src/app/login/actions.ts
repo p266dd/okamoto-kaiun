@@ -69,8 +69,7 @@ export const LoginAction = async function (
 
     // Redirect user to top page.
     // TODO
-    // return redirect("/", RedirectType.push);
-    return {};
+    return { success: "Logged in successfully." };
   } catch (error) {
     console.error("Login error: ", error);
     return { error: "An unexpected error occurred during login." };
@@ -200,7 +199,7 @@ export const ResetAction = async function (
 
     // Redirect user to top page.
     return { success: "Password reset successfully." };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Reset error: ", error);
     return { error: "An unexpected error occurred during password reset." };
   }

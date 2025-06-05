@@ -20,6 +20,7 @@ export async function decrypt(
     });
     return decrypt.payload;
   } catch (error) {
+    console.error("Decrypt error: ", error);
     return null;
   }
 }

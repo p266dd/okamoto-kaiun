@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 
 // Shadcn
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,12 @@ export default function LoginForm({
 }) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(action, { error: null, success: null });
+
+  useEffect(() => {
+    if (router && state?.success) {
+      router.push("/");
+    }
+  }, [router, state]);
 
   return (
     <>
