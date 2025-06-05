@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useRouter } from "next/navigation";
 
 // Shadcn
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ export default function ResetPasswordForm({
   id: string | null;
 }) {
   const [state, formAction, isPending] = useActionState(action, { error: null, success: null });
+  const router = useRouter();
 
   return (
     <>
@@ -34,7 +36,14 @@ export default function ResetPasswordForm({
               <Label htmlFor="password">Password</Label>
             </div>
             <input type="hidden" name="id" value={id ? id : ""} />
-            <Input id="password" name="password" type="password" placeholder="••••••••" required />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              disabled={Boolean(state?.success)}
+              required
+            />
           </div>
 
           <div className="grid gap-3">
@@ -46,12 +55,24 @@ export default function ResetPasswordForm({
               name="confirmPassword"
               type="password"
               placeholder="••••••••"
+              disabled={Boolean(state?.success)}
               required
             />
           </div>
-          <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
-            Save New Password
-          </Button>
+          {state?.success ? (
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={() => router.push("/")}
+              className="w-full"
+            >
+              Go to Dashboard
+            </Button>
+          ) : (
+            <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
+              Save New Password
+            </Button>
+          )}
 
           {state?.success && (
             <Alert className="bg-blue-50">

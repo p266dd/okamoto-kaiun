@@ -1,6 +1,5 @@
 import { z } from "zod/v4";
 import { SignJWT } from "jose";
-import { redirect, RedirectType } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { compareSync, hashSync } from "bcryptjs";
 import { createSession } from "@/lib/session";
@@ -69,7 +68,9 @@ export const LoginAction = async function (
     });
 
     // Redirect user to top page.
-    return redirect("/", RedirectType.push);
+    // TODO
+    // return redirect("/", RedirectType.push);
+    return {};
   } catch (error) {
     console.error("Login error: ", error);
     return { error: "An unexpected error occurred during login." };
@@ -114,7 +115,7 @@ export const RecoverAction = async function (
 
     // Generate token.
     const secret = new TextEncoder().encode(process.env.SECRET);
-    const token = new SignJWT({ id: user.id })
+    const token = await new SignJWT({ id: user.id })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime(new Date(Date.now() + 3 * 60 * 60 * 1000))
@@ -198,8 +199,8 @@ export const ResetAction = async function (
     revalidatePath("/login");
 
     // Redirect user to top page.
-    return redirect("/", RedirectType.push);
-  } catch (error) {
+    return { success: "Password reset successfully." };
+  } catch (error: any) {
     console.error("Reset error: ", error);
     return { error: "An unexpected error occurred during password reset." };
   }
@@ -211,7 +212,7 @@ export interface EmbarkActionState extends ActionState {
     name: string;
     ship: string;
     code: string;
-    status: boolean | false;
+    status: boolean | null;
   } | null;
 }
 
@@ -224,13 +225,13 @@ export const EmbarkAction = async function (
   // Get data.
   const data = {
     code: formData.get("code"),
-    status: formData.get("status") === "true",
+    status: formData.get("status") ? Boolean(formData.get("status")) : null,
   };
 
   // Create data schema.
   const dataSchema = z.object({
     code: z.string().length(6, { message: "Invalid code format." }),
-    status: z.boolean(),
+    status: z.boolean().nullable(),
   });
 
   // Validate data.
@@ -242,7 +243,7 @@ export const EmbarkAction = async function (
   const { code, status } = validateSchema.data;
 
   // Fetch staff by its code number.
-  const user = await findUnique("user", {
+  const user = await findUnique("staff", {
     where: { code: code },
   });
 
@@ -250,19 +251,19 @@ export const EmbarkAction = async function (
     return { error: "Staff not found." };
   }
 
-  if (!status) {
+  if (status === null || status === undefined) {
     return {
       staff: {
         name: user.name,
         ship: user.ship,
         code: code,
-        status: status,
+        status: user.status,
       },
     };
   }
 
   // Update User.
-  const updateUser = await update("user", { status: status }, { where: { id: user.id } });
+  const updateUser = await update("staff", { status: !user.status }, { where: { id: user.id } });
 
   // Refresh cache.
   revalidatePath("/login");

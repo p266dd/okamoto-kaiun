@@ -38,28 +38,26 @@ export function LoginPageLayout({ children }: { children: React.ReactNode }): Re
 
 export default async function LoginPage(props: { searchParams: SearchParams }) {
   const getSearchParams = await props.searchParams;
-  const action = getSearchParams?.action;
-  const token = getSearchParams?.token;
+  const paramsObject = {
+    action: getSearchParams?.action,
+    token: getSearchParams?.token,
+  };
 
   // Sanitize action and token.
-  const actionSchema = z.string().max(20, { message: "Action not available." });
-  const tokenSchema = z
-    .string()
-    .length(60, { message: "Token must be valid." })
-    .regex(/^((?:\.?(?:[A-Za-z0-9-_]+)){3})$/, {
-      message: "Token must be a valid hash.",
-    });
+  const paramsSchema = z.object({
+    action: z.enum(["recover", "reset", "embark"]).optional(),
+    token: z.string().optional(),
+  });
 
-  const validatedAction = actionSchema.safeParse(action);
-  const validateToken = tokenSchema.safeParse(token);
+  const validateParams = paramsSchema.safeParse(paramsObject);
 
   let decryptToken: JWTPayload | undefined = undefined;
-  if (validateToken.success) {
+  if (validateParams.success && validateParams?.data?.token) {
     // Decrypt token if it exists.
-    decryptToken = await decrypt(validateToken.data);
+    decryptToken = await decrypt(validateParams.data.token);
   }
 
-  switch (validatedAction?.data) {
+  switch (validateParams?.data?.action) {
     case "recover":
       return (
         <LoginPageLayout>

@@ -28,6 +28,8 @@ export default function EmbarkForm({
     staff: null,
   });
 
+  console.log(state);
+
   return (
     <>
       <form action={formAction} className="p-6 md:p-8">
@@ -69,7 +71,7 @@ export default function EmbarkForm({
                       <Ship />
                       <p>
                         Currently assigned to ship: <br />
-                        <strong className="font-semibold">Ship Name</strong>
+                        <strong className="font-semibold">{state?.staff?.ship || "None"}</strong>
                       </p>
                     </div>
                   </CardDescription>
@@ -78,8 +80,8 @@ export default function EmbarkForm({
                   <input type="hidden" name="code" value={state.staff?.code} readOnly />
                   <input
                     type="hidden"
-                    name="newStatus"
-                    value={String(!state.staff?.status)}
+                    name="status"
+                    value={String(Boolean(!state.staff?.status))}
                     readOnly
                   />
                   <Button
@@ -88,7 +90,7 @@ export default function EmbarkForm({
                     size="lg"
                     className="flex-grow"
                   >
-                    {state.staff?.status ? "DiseEmbark" : "Embark"}
+                    {state.staff?.status ? "Disembark" : "Embark"}
                   </Button>
                 </CardContent>
               </Card>
