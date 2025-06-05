@@ -11,9 +11,15 @@ export async function encrypt(payload: JWTPayload) {
     .sign(jwtSecret);
 }
 
-export async function decrypt(session: string | Uint8Array<ArrayBufferLike>) {
-  const decrypt = await jwtVerify(session, jwtSecret, {
-    algorithms: ["HS256"],
-  });
-  return decrypt.payload;
+export async function decrypt(
+  session: string | Uint8Array<ArrayBufferLike>
+): Promise<JWTPayload | null> {
+  try {
+    const decrypt = await jwtVerify(session, jwtSecret, {
+      algorithms: ["HS256"],
+    });
+    return decrypt.payload;
+  } catch (error) {
+    return null;
+  }
 }
