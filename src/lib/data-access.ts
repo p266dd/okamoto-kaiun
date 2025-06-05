@@ -26,8 +26,9 @@ type Model = keyof Omit<
  * @returns The created record.
  * @throws PrismaClientKnownRequestError if the database request fails.
  */
-export async function create(model: Model, payload: Object, options?: Object) {
+export async function create(model: Model, payload: object, options?: object) {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const delegate = prisma[model] as any;
     const result = await delegate.create({
       data: payload,
@@ -47,8 +48,9 @@ export async function create(model: Model, payload: Object, options?: Object) {
  * @returns The found record or null if not found.
  * @throws PrismaClientKnownRequestError if the database request fails.
  */
-export async function findUnique(model: Model, args: Object, options?: Object) {
+export async function findUnique(model: Model, args: object, options?: object) {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const delegate = prisma[model] as any;
     const record = await delegate.findUnique(args, { ...options });
     return record;
@@ -70,8 +72,9 @@ export async function findUnique(model: Model, args: Object, options?: Object) {
  * @returns An array of found records.
  * @throws PrismaClientKnownRequestError if the database request fails.
  */
-export async function findMany(model: Model, args?: Object, options?: Object) {
+export async function findMany(model: Model, args?: object, options?: object) {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const delegate = prisma[model] as any;
     const records = await delegate.findMany(args, { ...options });
     return records;
@@ -96,10 +99,11 @@ export async function findMany(model: Model, args?: Object, options?: Object) {
  */
 export async function update(
   model: Model,
-  payload: Object,
-  options: Object // Requires 'where', can include 'select', 'include'.
+  payload: object,
+  options: object // Requires 'where', can include 'select', 'include'.
 ) {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const delegate = prisma[model] as any;
     const result = await delegate.update({
       data: payload,
@@ -130,12 +134,13 @@ export async function update(
 export async function remove(
   model: Model,
   _payload: unknown, // Parameter present to match requested signature, but unused.
-  options: Object // Requires 'where', can include 'select'.
+  options: object // Requires 'where', can include 'select'.
 ) {
   // _payload is ignored as Prisma's delete operation does not use a 'data' field.
   // The 'where' clause and other options are expected in the 'options' object.
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const delegate = prisma[model] as any;
     const result = await delegate.delete({ ...options });
     return result;
