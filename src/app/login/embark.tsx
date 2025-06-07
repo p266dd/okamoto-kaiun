@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
 import CompanyLogo from "@/assets/company_logo.png";
 
@@ -10,7 +10,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Lock, Ship } from "lucide-react";
 
 // Types and Interfaces
@@ -22,13 +37,14 @@ export default function EmbarkForm({
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
 }) {
   const router = useRouter();
-  const [state, formAction, isPending] = useActionState(action, {
+  const [ship, setShip] = useState<string | null>(null);
+  const [state, formAction, isPending] = useActionState<ActionState, FormData>(action, {
     error: null,
     success: null,
     staff: null,
   });
 
-  console.log(state);
+  console.log(state?.staff);
 
   return (
     <>
@@ -55,7 +71,11 @@ export default function EmbarkForm({
                   required
                 />
               </div>
-              <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
+              <Button
+                variant={isPending ? "outline" : "default"}
+                type="submit"
+                className="w-full"
+              >
                 Apply Code
               </Button>
             </>
@@ -63,21 +83,49 @@ export default function EmbarkForm({
             <>
               <Card>
                 <CardHeader>
-                  <CardTitle>
+                  <CardTitle className="mb-3">
+                    <p className="text-sm text-slate-500">Staff</p>
                     <p className="text-lg">Dhavidy Pires</p>
                   </CardTitle>
                   <CardDescription>
-                    <div className="flex gap-4 items-center">
-                      <Ship />
-                      <p>
-                        Currently assigned to ship: <br />
-                        <strong className="font-semibold">{state?.staff?.ship || "None"}</strong>
-                      </p>
-                    </div>
+                    {!state.staff?.status ? (
+                      <div className="flex gap-4 items-center">
+                        <Ship />
+                        <div className="flex-grow">
+                          <p className="mb-2">Select a ship to proceed.</p>
+                          <Select onValueChange={(value) => setShip(value)}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select a ship" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Ships</SelectLabel>
+                                {["Ship 1", "Ship 2", "Ship 3"].map((ship) => (
+                                  <SelectItem key={`ship-${ship}`} value={ship}>
+                                    {ship}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex gap-4 items-center">
+                        <Ship />
+                        <div className="flex-grow">
+                          <p className="mb-2">
+                            You are currently embarked in{" "}
+                            <strong>{state.staff?.currentShip}</strong>.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex gap-4 justify-between">
                   <input type="hidden" name="code" value={state.staff?.code} readOnly />
+                  <input type="hidden" name="ship" value={String(ship)} readOnly />
                   <input
                     type="hidden"
                     name="status"
@@ -95,7 +143,7 @@ export default function EmbarkForm({
                 </CardContent>
               </Card>
               <Button
-                variant="secondary"
+                variant="outline"
                 type="button"
                 onClick={() => router.refresh()}
                 className="w-full"
@@ -116,8 +164,9 @@ export default function EmbarkForm({
                 </CardHeader>
                 <CardContent className="flex gap-4 justify-between text-center">
                   <div>
-                    You have successfully {state.staff.status ? "embarked" : "disembarked"} the
-                    ship. Please contact your manager should you require assistance.
+                    You have successfully{" "}
+                    {state.staff.status ? "embarked" : "disembarked"} the ship. Please
+                    contact your manager should you require assistance.
                   </div>
                 </CardContent>
               </Card>

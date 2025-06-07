@@ -12,11 +12,21 @@ import ResetPasswordForm from "./reset";
 import EmbarkForm from "./embark";
 
 // Actions and Types
-import { LoginAction, RecoverAction, ResetAction, EmbarkAction, SearchParams } from "./actions";
+import {
+  LoginAction,
+  RecoverAction,
+  ResetAction,
+  EmbarkAction,
+  SearchParams,
+} from "./actions";
 import { decrypt } from "@/lib/jwt";
 import { JWTPayload } from "jose";
 
-export function LoginPageLayout({ children }: { children: React.ReactNode }): React.ReactElement {
+export function LoginPageLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement {
   return (
     <div className="bg-[#f6f5f6] flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm md:max-w-3xl">
@@ -24,8 +34,13 @@ export function LoginPageLayout({ children }: { children: React.ReactNode }): Re
           <Card className="overflow-hidden p-0 shadow-2xl">
             <CardContent className="grid p-0 md:grid-cols-2">
               {children}
-              <div className="bg-brand relative hidden  items-center justify-center md:flex">
-                <Image src={CompanyLogo} alt="Okamoto Kaiun Logo" className="max-w-48" />
+              <div className="bg-primary relative hidden  items-center justify-center md:flex">
+                <Image
+                  priority
+                  src={CompanyLogo}
+                  alt="Okamoto Kaiun Logo"
+                  className="max-w-48"
+                />
               </div>
             </CardContent>
           </Card>

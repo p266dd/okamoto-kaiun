@@ -35,8 +35,9 @@ model Staff {
   status    Boolean @default(false)
   isActive  Boolean @default(true)
 
-  ship   Ship?   @relation(fields: [shipId], references: [id])
-  shipId String? // Optional
+  ship        Ship?   @relation(fields: [shipId], references: [id])
+  shipId      String? // Optional
+  currentShip String? // Optional
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

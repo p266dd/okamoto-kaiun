@@ -182,7 +182,11 @@ export const ResetAction = async function (
 
   try {
     // Update user.
-    const updateUser = await update("user", { password: hashPassword }, { where: { id: data.id } });
+    const updateUser = await update(
+      "user",
+      { password: hashPassword, token: null },
+      { where: { id: data.id } }
+    );
     if (!updateUser) {
       return { error: "Could not update user." };
     }
@@ -210,6 +214,7 @@ export interface EmbarkActionState extends ActionState {
   staff?: {
     name: string;
     ship: string;
+    currentShip?: string;
     code: string;
     status: boolean | null;
   } | null;
@@ -224,6 +229,7 @@ export const EmbarkAction = async function (
   // Get data.
   const data = {
     code: formData.get("code"),
+    ship: formData.get("ship"),
     status: formData.get("status") ? Boolean(formData.get("status")) : null,
   };
 
@@ -231,6 +237,7 @@ export const EmbarkAction = async function (
   const dataSchema = z.object({
     code: z.string().length(6, { message: "Invalid code format." }),
     status: z.boolean().nullable(),
+    ship: z.string().nullable(),
   });
 
   // Validate data.
@@ -239,7 +246,7 @@ export const EmbarkAction = async function (
     return { error: "Invalid code." };
   }
 
-  const { code, status } = validateSchema.data;
+  const { code, status, ship } = validateSchema.data;
 
   // Fetch staff by its code number.
   const user = await findUnique("staff", {
@@ -255,6 +262,7 @@ export const EmbarkAction = async function (
       staff: {
         name: user.name,
         ship: user.ship,
+        currentShip: user.currentShip,
         code: code,
         status: user.status,
       },
@@ -262,7 +270,11 @@ export const EmbarkAction = async function (
   }
 
   // Update User.
-  const updateUser = await update("staff", { status: !user.status }, { where: { id: user.id } });
+  const updateUser = await update(
+    "staff",
+    { status: !user.status, currentShip: ship },
+    { where: { id: user.id } }
+  );
 
   // Refresh cache.
   revalidatePath("/login");
@@ -273,6 +285,7 @@ export const EmbarkAction = async function (
     staff: {
       name: updateUser.name,
       ship: updateUser.ship,
+      currentShip: updateUser.currentShip,
       code: updateUser.code,
       status: updateUser.status,
     },
