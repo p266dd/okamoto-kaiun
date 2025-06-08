@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 
@@ -12,6 +14,8 @@ import { Lock } from "lucide-react";
 
 // Types and Interfaces
 import { ActionState } from "./actions";
+
+import CompanyLogo from "@/assets/company_logo.png";
 
 export default function LoginForm({
   action,
@@ -35,6 +39,11 @@ export default function LoginForm({
       <form action={formAction} className="p-6 md:p-8">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
+            <Image
+              src={CompanyLogo}
+              alt="Okamoto Kaiun Logo"
+              className="invert max-w-40 mt-4 mb-8 sm:hidden"
+            />
             <h1 className="text-2xl font-bold">Welcome!</h1>
             <p className="text-muted-foreground text-balance"></p>
           </div>
@@ -74,6 +83,12 @@ export default function LoginForm({
           >
             Login
           </Button>
+          <Link
+            className="text-primary"
+            href={`${process.env.NEXT_PUBLIC_BASE_URL}/login?action=embark`}
+          >
+            Are you a staff?
+          </Link>
           {state?.error && (
             <Alert variant="destructive" className="bg-red-50">
               <Lock />
