@@ -19,7 +19,10 @@ export default function LoginForm({
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
 }) {
   const router = useRouter();
-  const [state, formAction, isPending] = useActionState(action, { error: null, success: null });
+  const [state, formAction, isPending] = useActionState(action, {
+    error: null,
+    success: null,
+  });
 
   useEffect(() => {
     if (router && state?.success) {
@@ -37,21 +40,38 @@ export default function LoginForm({
           </div>
           <div className="grid gap-3">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" placeholder="name@email.com" required />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="name@email.com"
+              required
+            />
           </div>
           <div className="grid gap-3">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
               <button
+                type="button"
                 onClick={() => router.push("/login?action=recover")}
                 className="ml-auto text-sm underline-offset-2 hover:underline"
               >
                 Forgot your password?
               </button>
             </div>
-            <Input id="password" name="password" type="password" placeholder="••••••••" required />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              required
+            />
           </div>
-          <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
+          <Button
+            variant={isPending ? "outline" : "default"}
+            type="submit"
+            className="w-full"
+          >
             Login
           </Button>
           {state?.error && (

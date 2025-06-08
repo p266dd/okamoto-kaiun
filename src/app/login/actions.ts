@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { compareSync, hashSync } from "bcryptjs";
 import { createSession } from "@/lib/session";
 import { findUnique, update } from "@/lib/data-access";
+import { _resetPasswordEmail } from "./_reset-password-email";
 
 // 1. Login Action
 // 2. Recover Action
@@ -67,8 +68,6 @@ export const LoginAction = async function (
       email: user.email,
     });
 
-    // Redirect user to top page.
-    // TODO
     return { success: "Logged in successfully." };
   } catch (error) {
     console.error("Login error: ", error);
@@ -127,8 +126,12 @@ export const RecoverAction = async function (
       return { error: "Could not update user." };
     }
 
-    // Send code to email.
-    // TODO <==
+    // Send token to email.
+    await _resetPasswordEmail({
+      token: token,
+      name: user.name,
+      email: user.email,
+    });
 
     // Refresh cache.
     revalidatePath("/login");
