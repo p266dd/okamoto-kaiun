@@ -7,7 +7,11 @@ import { encrypt, decrypt } from "@/lib/jwt";
 import { JWTPayload } from "jose";
 
 // Creates a session cookie with users data.
-export async function createSession({ id, name, email }: JWTPayload): Promise<string | null> {
+export async function createSession({
+  id,
+  name,
+  email,
+}: JWTPayload): Promise<string | null> {
   const cookieStore = await cookies();
   const expiration = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   const session = await encrypt({ id, name, email });
@@ -45,5 +49,4 @@ export async function getSession(): Promise<JWTPayload | null> {
 export async function deleteSession(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete("session");
-  return redirect("/login");
 }

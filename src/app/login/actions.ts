@@ -1,8 +1,10 @@
 import { z } from "zod/v4";
 import { SignJWT } from "jose";
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { compareSync, hashSync } from "bcryptjs";
 import { createSession } from "@/lib/session";
+import { deleteSession } from "@/lib/session";
 import { findUnique, update } from "@/lib/data-access";
 import { _resetPasswordEmail } from "./_reset-password-email";
 
@@ -294,3 +296,10 @@ export const EmbarkAction = async function (
     },
   };
 };
+
+// 4. Logout Action.
+export async function LogoutAction() {
+  "use server";
+  await deleteSession();
+  redirect("/login");
+}

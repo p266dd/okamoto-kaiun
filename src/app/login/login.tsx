@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Lock } from "lucide-react";
+import { Loader, Lock } from "lucide-react";
 
 // Types and Interfaces
 import { ActionState } from "./actions";
@@ -81,7 +81,7 @@ export default function LoginForm({
             type="submit"
             className="w-full"
           >
-            Login
+            Login {isPending && <Loader className="animate-spin" />}
           </Button>
           <Link
             className="text-primary"

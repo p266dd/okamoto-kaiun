@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { LogoutAction } from "@/app/login/actions";
+
+// Assets
 import CompanyLogo from "@/assets/company_logo.png";
 import HeaderArch from "@/assets/header-arch.png";
 
@@ -18,6 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { ChevronRight, Lock } from "lucide-react";
 
 export default async function Header() {
   return (
@@ -32,25 +36,26 @@ export default async function Header() {
               <NavigationMenuList className="gap-4">
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="#">Schedule</Link>
+                    <Link href="/">カレンダー</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="#">Manage Staff</Link>
+                    <Link href="/staff">スタッフ管理</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="#">Manage Ship</Link>
+                    <Link href="/payroll">給与計算</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
-
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="#">Calculate Payroll</Link>
+                    <form action={LogoutAction}>
+                      <button type="submit">ログアウト</button>
+                    </form>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
@@ -58,24 +63,44 @@ export default async function Header() {
 
             <div className="sm:hidden">
               <Sheet>
-                <SheetTrigger>Open</SheetTrigger>
+                <SheetTrigger className="text-nowrap">メニュー</SheetTrigger>
                 <SheetContent>
                   <SheetHeader>
-                    <SheetTitle>Navigation</SheetTitle>
-                    <SheetDescription className="sr-only">Navigation</SheetDescription>
+                    <SheetTitle>ナビゲーション</SheetTitle>
+                    <SheetDescription className="sr-only">
+                      ナビゲーション
+                    </SheetDescription>
                   </SheetHeader>
                   <ul className="flex flex-col gap-4 mx-4">
                     <li>
-                      <Link href="#">Schedule</Link>
+                      <Link href="/">
+                        <ChevronRight size={16} className="inline-block mr-2" />{" "}
+                        カレンダー
+                      </Link>
                     </li>
                     <li>
-                      <Link href="#">Manage Staff</Link>
+                      <Link href="/staff">
+                        <ChevronRight size={16} className="inline-block mr-2" />{" "}
+                        スタッフ管理
+                      </Link>
                     </li>
                     <li>
-                      <Link href="#">Manage Ship</Link>
+                      <Link href="/ship">
+                        <ChevronRight size={16} className="inline-block mr-2" /> 船舶管理
+                      </Link>
                     </li>
                     <li>
-                      <Link href="#">Calculate Payroll</Link>
+                      <Link href="/payroll">
+                        <ChevronRight size={16} className="inline-block mr-2" /> 給与計算
+                      </Link>
+                    </li>
+                    <li>
+                      <form action={LogoutAction}>
+                        <button type="submit">
+                          <Lock className="inline-block mr-2" />
+                          ログアウト
+                        </button>
+                      </form>
                     </li>
                   </ul>
                 </SheetContent>
