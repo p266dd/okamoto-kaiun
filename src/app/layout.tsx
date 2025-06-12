@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Yuji_Syuku, Outfit } from "next/font/google";
 import "./globals.css";
 
+import { Toaster } from "@/components/ui/sonner";
+
 const yujiSyuku = Yuji_Syuku({
   weight: "400",
   variable: "--font-yuji-syuku",
@@ -27,6 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${yujiSyuku.variable} ${outfit.variable} antialiased`}>
         {children}
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );
