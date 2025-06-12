@@ -1,8 +1,14 @@
 "use client";
 
 import { z } from "zod/v4";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { mutate } from "swr";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+
+import { createStaff } from "./create-staff";
+import { updateStaff } from "./updateStaff";
 
 // Shadcn
 import {
@@ -20,42 +26,73 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { PlusCircleIcon } from "lucide-react";
+import { PencilIcon, PlusCircleIcon } from "lucide-react";
 
 const formSchema = z.object({
-  firstName: z.string().min(3, "Too short, should  be at least 3 characters"),
-  lastName: z.string().min(3, "Too short, should  be at least 3 characters"),
+  firstName: z.string().min(3, "Too short, should  be at least 3 characters").trim(),
+  lastName: z.string().min(3, "Too short, should  be at least 3 characters").trim(),
   email: z.email(),
-  phone: z.string().min(8, "Too short, should  be at least 8 characters"),
-  role: z.string().min(4, "Too short, should  be at least 4 characters"),
-  salary: z.number(),
-  code: z.string().min(6, "Too short, should  be at least 6 characters"),
+  phone: z.string().min(8, "Too short, should  be at least 8 characters").trim(),
+  role: z.string().min(4, "Too short, should  be at least 4 characters").trim(),
+  salary: z.string().trim(),
+  code: z.string().min(6, "Too short, should  be at least 6 characters").trim(),
 });
 
-import { Staff } from "./page";
+import { StaffInterface } from "./page";
 
-export default function StaffForm({ edit }: { edit: Staff | null }) {
+export default function StaffForm({
+  edit,
+  setEdit,
+}: {
+  edit: StaffInterface | null;
+  setEdit: React.Dispatch<React.SetStateAction<StaffInterface | null>>;
+}) {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: edit
-      ? { ...edit }
-      : {
-          firstName: "",
-          lastName: "",
-          email: "",
-          phone: "",
-          role: "",
-          salary: 0,
-          code: "",
-        },
+    values: {
+      firstName: edit ? edit.firstName : "",
+      lastName: edit ? edit.lastName : "",
+      email: edit ? edit.email : "",
+      phone: edit ? edit.phone : "",
+      role: edit ? edit.role : "",
+      salary: edit ? edit.salary : "",
+      code: edit ? edit.code : "",
+    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    if (edit) {
+      updateStaff(edit.id, { ...values, salary: parseInt(values.salary.toString()) })
+        .then((res) => {
+          toast.success("Changes have been saved.");
+          setEdit(null);
+        })
+        .catch((error) => {
+          toast.error("An error occured.");
+          setErrorMessage(error.message);
+        });
+
+      mutate("fetchStaff");
+
+      return;
+    }
+
+    createStaff({ ...values, salary: parseInt(values.salary.toString()) })
+      .then((res) => {
+        toast.success("New staff has been added.");
+        form.reset();
+      })
+      .catch((error) => {
+        toast.error("An error occured.");
+        setErrorMessage(error.message);
+      });
+
+    mutate("fetchStaff");
   }
 
   return (
@@ -69,7 +106,7 @@ export default function StaffForm({ edit }: { edit: Staff | null }) {
               <FormItem className="flex-1">
                 <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Dhavidy" {...field} />
+                  <Input placeholder="Dhavidy" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -83,7 +120,7 @@ export default function StaffForm({ edit }: { edit: Staff | null }) {
               <FormItem className="flex-1">
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Pires" {...field} />
+                  <Input placeholder="Pires" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -99,7 +136,7 @@ export default function StaffForm({ edit }: { edit: Staff | null }) {
               <FormItem className="w-full sm:flex-1">
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="name@example.com" {...field} />
+                  <Input placeholder="name@example.com" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -113,7 +150,7 @@ export default function StaffForm({ edit }: { edit: Staff | null }) {
               <FormItem className="flex-1">
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Input placeholder="090 000 0000" {...field} />
+                  <Input placeholder="090 1234 5678" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -127,7 +164,7 @@ export default function StaffForm({ edit }: { edit: Staff | null }) {
               <FormItem className="flex-1">
                 <FormLabel>Code</FormLabel>
                 <FormControl>
-                  <Input placeholder="012345" {...field} />
+                  <Input placeholder="6 digit code" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -142,10 +179,10 @@ export default function StaffForm({ edit }: { edit: Staff | null }) {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel>Role</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Deck" {...field} />
+                      <SelectValue placeholder="Choose role" {...field} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -166,7 +203,7 @@ export default function StaffForm({ edit }: { edit: Staff | null }) {
               <FormItem>
                 <FormLabel>Salary</FormLabel>
                 <FormControl>
-                  <Input placeholder="1000Y" {...field} />
+                  <Input placeholder="¥ Hourly salary" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -174,11 +211,25 @@ export default function StaffForm({ edit }: { edit: Staff | null }) {
           />
         </div>
 
+        {errorMessage && (
+          <Alert variant="destructive" className="bg-red-50 border-red-200">
+            <AlertDescription>
+              <p>{errorMessage}.</p>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="flex items-center gap-5 my-9">
-          <Button type="submit">
-            <PlusCircleIcon /> Add New Staff
-          </Button>
-          <Button variant="outline" type="button">
+          {edit ? (
+            <Button type="submit" variant="success">
+              <PencilIcon /> Save Changes
+            </Button>
+          ) : (
+            <Button type="submit">
+              <PlusCircleIcon /> Add New Staff
+            </Button>
+          )}
+          <Button variant="outline" type="button" onClick={() => setEdit(null)}>
             Cancel
           </Button>
         </div>
