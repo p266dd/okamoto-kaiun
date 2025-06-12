@@ -1,16 +1,6 @@
 import Image from "next/image";
 import { CalendarView } from "@/components/calendar-view";
 
-// Shadcn
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-
 // Ship calendar background.
 import ShipBackground from "@/assets/jfe-n1.jpg";
 
