@@ -1,3 +1,5 @@
+"use server";
+
 import { z } from "zod/v4";
 import { SignJWT } from "jose";
 import { redirect } from "next/navigation";

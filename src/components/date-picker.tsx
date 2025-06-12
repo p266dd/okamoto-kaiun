@@ -27,9 +27,15 @@ function isValidDate(date: Date | undefined) {
   return !isNaN(date.getTime());
 }
 
-export default function DatePicker({ handleChange }: { handleChange: () => void }) {
+export default function DatePicker({
+  handleChange,
+  selected,
+}: {
+  handleChange: () => void;
+  selected: Date | null;
+}) {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date | undefined>(selected || undefined);
   const [month, setMonth] = useState<Date | undefined>(date);
   const [value, setValue] = useState(formatDate(date));
 
