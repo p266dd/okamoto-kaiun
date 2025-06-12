@@ -18,6 +18,7 @@ import {
   ResetAction,
   EmbarkAction,
   SearchParams,
+  fetchShips,
 } from "./actions";
 import { decrypt } from "@/lib/jwt";
 import { JWTPayload } from "jose";
@@ -72,6 +73,9 @@ export default async function LoginPage(props: { searchParams: SearchParams }) {
     decryptToken = await decrypt(validateParams.data.token);
   }
 
+  // Fetch ships for embark dropdown.
+  const ships = await fetchShips();
+
   switch (validateParams?.data?.action) {
     case "recover":
       return (
@@ -93,7 +97,7 @@ export default async function LoginPage(props: { searchParams: SearchParams }) {
     case "embark":
       return (
         <LoginPageLayout>
-          <EmbarkForm action={EmbarkAction} />
+          <EmbarkForm action={EmbarkAction} ships={ships} />
         </LoginPageLayout>
       );
 

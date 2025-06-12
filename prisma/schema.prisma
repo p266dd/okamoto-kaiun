@@ -58,9 +58,9 @@ model Ship {
 }
 
 model Schedule {
-  id        String @id @default(cuid())
-  embark    String
-  desembark String
+  id        String    @id @default(cuid())
+  embark    DateTime
+  desembark DateTime?
 
   ship   Ship?   @relation(fields: [shipId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   shipId String?

@@ -33,8 +33,10 @@ import { EmbarkActionState as ActionState } from "./actions";
 
 export default function EmbarkForm({
   action,
+  ships,
 }: {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
+  ships: { id: string; name: string }[] | null;
 }) {
   const router = useRouter();
   const [ship, setShip] = useState<string | null>(null);
@@ -44,17 +46,14 @@ export default function EmbarkForm({
     staff: null,
   });
 
-  console.log(state?.staff);
-
   return (
     <>
       <form action={formAction} className="p-6 md:p-8">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <div className="w-32 mt-4 mb-9 mx-auto invert sm:hidden">
+            <div className="w-32 mt-4 mb-9 mx-auto invert md:hidden">
               <Image src={CompanyLogo} alt="Okamoto Kaiun Logo" />
             </div>
-            <h1 className="text-2xl font-bold">Embark / Disembark</h1>
             <p className="text-muted-foreground text-balance"></p>
           </div>
 
@@ -85,7 +84,8 @@ export default function EmbarkForm({
                 <CardHeader>
                   <CardTitle className="mb-3">
                     <p className="text-sm text-slate-500">Staff</p>
-                    <p className="text-lg">Dhavidy Pires</p>
+
+                    <p className="text-lg">{state.staff?.name}</p>
                   </CardTitle>
                   <CardDescription>
                     {!state.staff?.status ? (
@@ -100,11 +100,12 @@ export default function EmbarkForm({
                             <SelectContent>
                               <SelectGroup>
                                 <SelectLabel>Ships</SelectLabel>
-                                {["Ship 1", "Ship 2", "Ship 3"].map((ship) => (
-                                  <SelectItem key={`ship-${ship}`} value={ship}>
-                                    {ship}
-                                  </SelectItem>
-                                ))}
+                                {ships &&
+                                  ships.map((ship) => (
+                                    <SelectItem key={`ship-${ship.id}`} value={ship.id}>
+                                      {ship.name}
+                                    </SelectItem>
+                                  ))}
                               </SelectGroup>
                             </SelectContent>
                           </Select>
@@ -114,10 +115,7 @@ export default function EmbarkForm({
                       <div className="flex gap-4 items-center">
                         <Ship />
                         <div className="flex-grow">
-                          <p className="mb-2">
-                            You are currently embarked in{" "}
-                            <strong>{state.staff?.currentShip}</strong>.
-                          </p>
+                          <p className="mb-2">You are currently embarked.</p>
                         </div>
                       </div>
                     )}
@@ -145,7 +143,7 @@ export default function EmbarkForm({
               <Button
                 variant="outline"
                 type="button"
-                onClick={() => router.refresh()}
+                onClick={() => router.push("/login")}
                 className="w-full"
               >
                 Cancel
