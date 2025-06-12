@@ -21,7 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ChevronRight, Lock } from "lucide-react";
+import { Dot, Lock } from "lucide-react";
 
 export default async function Header() {
   return (
@@ -74,24 +74,17 @@ export default async function Header() {
                   <ul className="flex flex-col gap-4 mx-4">
                     <li>
                       <Link href="/">
-                        <ChevronRight size={16} className="inline-block mr-2" />{" "}
-                        カレンダー
+                        <Dot size={16} className="inline-block mr-2" /> カレンダー
                       </Link>
                     </li>
                     <li>
                       <Link href="/staff">
-                        <ChevronRight size={16} className="inline-block mr-2" />{" "}
-                        スタッフ管理
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/ship">
-                        <ChevronRight size={16} className="inline-block mr-2" /> 船舶管理
+                        <Dot size={16} className="inline-block mr-2" /> スタッフ管理
                       </Link>
                     </li>
                     <li>
                       <Link href="/payroll">
-                        <ChevronRight size={16} className="inline-block mr-2" /> 給与計算
+                        <Dot size={16} className="inline-block mr-2" /> 給与計算
                       </Link>
                     </li>
                     <li>

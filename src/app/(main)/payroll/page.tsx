@@ -24,8 +24,8 @@ import { ShipIcon } from "lucide-react";
 
 export default function PayrollPage() {
   return (
-    <div>
-      <div className="px-6 sm:px-12 md:px-20 flex items-end justify-between gap-4 mb-14">
+    <div className="max-w-7xl mx-auto">
+      <div className="px-6 sm:px-12 md:px-20 flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">
         <div className="flex gap-4">
           <Card>
             <CardContent className="flex flex-col gap-2">
@@ -69,7 +69,7 @@ export default function PayrollPage() {
       </div>
       <div className="px-6 sm:px-12 md:px-20">
         <Table>
-          <TableCaption>A list of all staff members.</TableCaption>
+          <TableCaption className="text-left">A list of all staff members.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
