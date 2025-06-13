@@ -31,7 +31,7 @@ export default function DatePicker({
   handleChange,
   selected,
 }: {
-  handleChange: () => void;
+  handleChange: (date: Date | undefined) => void;
   selected: Date | null;
 }) {
   const [open, setOpen] = useState(false);
@@ -44,16 +44,18 @@ export default function DatePicker({
       <Input
         id="date"
         value={value}
-        placeholder="June 01, 2025"
+        placeholder="日付の選択"
         className="bg-background pr-10"
         onChange={(e) => {
-          const date = new Date(e.target.value);
+          const newRawDate = new Date(e.target.value);
           setValue(e.target.value);
-          if (isValidDate(date)) {
-            setDate(date);
-            setMonth(date);
+          let newValidDate: Date | undefined = undefined;
+          if (isValidDate(newRawDate)) {
+            newValidDate = newRawDate;
+            setDate(newValidDate);
+            setMonth(newValidDate);
           }
-          handleChange();
+          handleChange(newValidDate);
         }}
         onKeyDown={(e) => {
           if (e.key === "ArrowDown") {
@@ -89,7 +91,7 @@ export default function DatePicker({
               setDate(date);
               setValue(formatDate(date));
               setOpen(false);
-              handleChange();
+              handleChange(date);
             }}
           />
         </PopoverContent>
