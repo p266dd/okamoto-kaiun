@@ -87,7 +87,7 @@ export default async function Header() {
                         <Dot size={16} className="inline-block mr-2" /> 給与計算
                       </Link>
                     </li>
-                    <li>
+                    <li className="py-9">
                       <form action={LogoutAction}>
                         <button type="submit">
                           <Lock className="inline-block mr-2" />
