@@ -30,9 +30,11 @@ function isValidDate(date: Date | undefined) {
 export default function DatePicker({
   handleChange,
   selected,
+  id,
 }: {
   handleChange: (date: Date | undefined) => void;
   selected: Date | null;
+  id: string;
 }) {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(selected || undefined);
@@ -42,7 +44,7 @@ export default function DatePicker({
   return (
     <div className="relative flex gap-2">
       <Input
-        id="date"
+        id={id}
         value={value}
         placeholder="日付の選択"
         className="bg-background pr-10"

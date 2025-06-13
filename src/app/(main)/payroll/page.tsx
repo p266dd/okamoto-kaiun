@@ -246,6 +246,7 @@ export default function PayrollPage() {
           <div className="flex flex-col gap-2">
             <Label htmlFor="dateFrom">From</Label>
             <DatePicker
+              id="dateFrom"
               selected={payroll.start}
               handleChange={(
                 date // date is Date | undefined
@@ -256,6 +257,7 @@ export default function PayrollPage() {
           <div className="flex flex-col gap-2">
             <Label htmlFor="dateTo">To</Label>
             <DatePicker
+              id="dateTo"
               selected={payroll.finish}
               handleChange={(
                 date // date is Date | undefined
@@ -264,7 +266,7 @@ export default function PayrollPage() {
           </div>
         </div>
       </div>
-      <div className="px-6 sm:px-12 md:px-20">
+      <div className="px-6 sm:px-12 md:px-20 mb-12 sm:mb-20">
         <Table>
           <TableCaption className="text-left">
             {sortedPayrollStaffList.length > 0

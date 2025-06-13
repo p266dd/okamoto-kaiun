@@ -51,9 +51,9 @@ export default function StaffPage() {
       <div className="px-6 sm:px-12 md:px-20">
         <StaffForm edit={edit} setEdit={setEdit} />
       </div>
-      <div className="px-6 sm:px-12 md:px-20">
+      <div className="px-6 sm:px-12 md:px-20 mb-12 sm:mb-20">
         <Table>
-          <TableCaption>A list of all staff members.</TableCaption>
+          <TableCaption className="text-left">A list of all staff members.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
