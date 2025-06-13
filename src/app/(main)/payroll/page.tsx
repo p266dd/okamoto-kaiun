@@ -1,15 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { z } from "zod/v4";
-import {
-  format,
-  startOfMonth,
-  endOfMonth,
-  differenceInCalendarDays,
-  max,
-  min,
-} from "date-fns";
+import { useState, useEffect, useMemo } from "react";
+import { startOfMonth, endOfMonth, differenceInCalendarDays, max, min } from "date-fns";
 import { ja } from "date-fns/locale";
 import { fetchShips } from "@/app/login/actions";
 import { getScheduleData } from "@/app/(main)/actions/get-schedule";
@@ -34,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import DatePicker from "@/components/date-picker";
 import { Label } from "@/components/ui/label";
-import { ShipIcon } from "lucide-react";
+import { ShipIcon, ArrowUpDownIcon } from "lucide-react";
 
 // Types
 import { Staff } from "@/lib/prisma/generate";
@@ -61,6 +53,13 @@ type StaffPayrollRow = Staff & {
   workedDays: number;
 };
 
+type SortKey = "name" | "role" | "workedDays" | "salary";
+type SortOrder = "asc" | "desc";
+type SortConfig = {
+  key: SortKey | null;
+  order: SortOrder;
+};
+
 // Default date range (e.g., current month)
 const initialDefaultStart = startOfMonth(new Date());
 const initialDefaultEnd = endOfMonth(new Date());
@@ -73,6 +72,10 @@ export default function PayrollPage() {
     shipID: "cmbsxmjz60000ycvb6i0b7j16", // Default ship ID
     start: initialDefaultStart,
     finish: initialDefaultEnd,
+  });
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    key: null,
+    order: "asc",
   });
 
   useEffect(() => {
@@ -87,6 +90,35 @@ export default function PayrollPage() {
 
     loadShips();
   }, []);
+
+  const sortedPayrollStaffList = useMemo(() => {
+    let sortableItems = [...payrollStaffList];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        let valA: string | number = "";
+        let valB: string | number = "";
+
+        if (sortConfig.key === "name") {
+          valA = `${a.firstName} ${a.lastName}`.toLowerCase();
+          valB = `${b.firstName} ${b.lastName}`.toLowerCase();
+        } else if (sortConfig.key === "role") {
+          valA = a.role?.toLowerCase() || "";
+          valB = b.role?.toLowerCase() || "";
+        } else if (sortConfig.key === "workedDays") {
+          valA = a.workedDays;
+          valB = b.workedDays;
+        } else if (sortConfig.key === "salary") {
+          valA = a.salary;
+          valB = b.salary;
+        }
+
+        if (valA < valB) return sortConfig.order === "asc" ? -1 : 1;
+        if (valA > valB) return sortConfig.order === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [payrollStaffList, sortConfig]);
 
   useEffect(() => {
     const fetchAndProcessScheduleData = async () => {
@@ -154,6 +186,17 @@ export default function PayrollPage() {
 
     fetchAndProcessScheduleData();
   }, [payroll.start, payroll.finish, payroll.shipID]); // Refetch when these dependencies change
+
+  const requestSort = (key: SortKey) => {
+    let order: SortOrder = "asc";
+    if (sortConfig.key === key && sortConfig.order === "asc") {
+      order = "desc";
+    }
+    setSortConfig({ key, order });
+  };
+
+  const getSortIndicator = (key: SortKey) =>
+    sortConfig.key === key ? (sortConfig.order === "asc" ? " ▲" : " ▼") : "";
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -224,33 +267,69 @@ export default function PayrollPage() {
       <div className="px-6 sm:px-12 md:px-20">
         <Table>
           <TableCaption className="text-left">
-            {payrollStaffList.length > 0
+            {sortedPayrollStaffList.length > 0
               ? `選択した船舶および期間のスタッフのリスト。`
               : `選択した条件に該当するスタッフデータはありません。`}
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>名前</TableHead>
-              <TableHead>メール</TableHead>
-              <TableHead>電話</TableHead>
-              <TableHead>ピンコード</TableHead>
-              <TableHead>役割</TableHead>
-              <TableHead>給料</TableHead>
-              <TableHead className="text-right">勤務日数</TableHead>
+              <TableHead>
+                <button
+                  onClick={() => requestSort("name")}
+                  className="flex items-center gap-1 hover:text-primary"
+                >
+                  名前 <ArrowUpDownIcon className="h-3 w-3" />
+                  <span className="text-sm text-blue-500">
+                    {getSortIndicator("name")}
+                  </span>
+                </button>
+              </TableHead>
+              <TableHead>
+                <button
+                  onClick={() => requestSort("role")}
+                  className="flex items-center gap-1 hover:text-primary"
+                >
+                  役割 <ArrowUpDownIcon className="h-3 w-3" />
+                  <span className="text-sm text-blue-500">
+                    {getSortIndicator("role")}
+                  </span>
+                </button>
+              </TableHead>
+              <TableHead>
+                <button
+                  onClick={() => requestSort("salary")}
+                  className="flex items-center gap-1 hover:text-primary"
+                >
+                  給料 <ArrowUpDownIcon className="h-3 w-3" />
+                  <span className="text-sm text-blue-500">
+                    {getSortIndicator("salary")}
+                  </span>
+                </button>
+              </TableHead>
+              <TableHead className="text-right">
+                <button
+                  onClick={() => requestSort("workedDays")}
+                  className="flex items-center gap-1 hover:text-primary justify-end w-full"
+                >
+                  勤務日数 <ArrowUpDownIcon className="h-3 w-3" />
+                  <span className="text-sm text-blue-500">
+                    {getSortIndicator("workedDays")}
+                  </span>
+                </button>
+              </TableHead>
+              <TableHead className="text-right">給与</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {payrollStaffList.length > 0 ? (
-              payrollStaffList.map((staffMember) => (
+            {sortedPayrollStaffList.length > 0 ? (
+              sortedPayrollStaffList.map((staffMember) => (
                 <TableRow key={staffMember.id}>
                   <TableCell>
                     {`${staffMember.firstName || ""} ${
                       staffMember.lastName || ""
                     }`.trim()}
                   </TableCell>
-                  <TableCell>{staffMember.email || "N/A"}</TableCell>
-                  <TableCell>{staffMember.phone || "N/A"}</TableCell>
-                  <TableCell>{staffMember.code || "N/A"}</TableCell>
+
                   <TableCell className="capitalize">
                     {staffMember.role || "N/A"}
                   </TableCell>
@@ -259,6 +338,7 @@ export default function PayrollPage() {
                       ? `¥ ${staffMember.salary.toLocaleString()}`
                       : "N/A"}
                   </TableCell>
+                  <TableCell className="text-right">{staffMember.workedDays}</TableCell>
                   <TableCell className="text-right">
                     {`¥ ${staffMember.workedDays * Number(staffMember.salary)}`}
                   </TableCell>
