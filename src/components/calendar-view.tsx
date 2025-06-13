@@ -267,6 +267,13 @@ export const CalendarView = () => {
                   </TableRow>
                 );
               })}
+              {processedStaffList.length === 0 && (
+                <TableRow className="hover:bg-gray-100 h-9">
+                  <TableCell className="bg-blue-100 font-medium pr-4 sm:pr-12">
+                    スタッフなし
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>
@@ -450,6 +457,11 @@ export const CalendarView = () => {
                     </TableRow>
                   );
                 })}
+                {processedStaffList.length === 0 && (
+                  <TableRow className="hover:bg-gray-100 h-9">
+                    <TableCell className="bg-blue-100 font-medium pr-4 sm:pr-12"></TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
             <ScrollBar className="h-4 translate-y-6" orientation="horizontal" />
