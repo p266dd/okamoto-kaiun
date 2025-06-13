@@ -20,7 +20,7 @@ export default async function Home() {
         className="w-full max-h-[400px] object-cover mask-b-from-0% mask-b-to-90%"
       />
 
-      <div className="relative z-10 -mt-12">
+      <div className="relative z-10 sm:-mt-12">
         <CalendarView />
       </div>
     </div>

@@ -216,7 +216,7 @@ export const CalendarView = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center md:justify-start gap-3 mb-9 px-12">
+      <div className="flex items-start justify-start md:justify-start gap-3 mb-9 px-2 sm:px-12">
         <div>
           <Button
             className="cursor-pointer"
@@ -226,17 +226,18 @@ export const CalendarView = () => {
             <RefreshCwIcon />
           </Button>
         </div>
-
-        {availableShips.map((ship, i) => (
-          <div key={`whip-${i}`}>
-            <Button
-              variant={selectedShipId === ship.id ? "default" : "outline"}
-              onClick={() => setSelectedShipId(ship.id)}
-            >
-              {ship.name}
-            </Button>
-          </div>
-        ))}
+        <div className="flex flex-wrap gap-3">
+          {availableShips.map((ship, i) => (
+            <div key={`whip-${i}`}>
+              <Button
+                variant={selectedShipId === ship.id ? "default" : "outline"}
+                onClick={() => setSelectedShipId(ship.id)}
+              >
+                {ship.name}
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="relative flex">
         <div className="relative w-1/3 sm:w-1/5 md:w-2/12">
