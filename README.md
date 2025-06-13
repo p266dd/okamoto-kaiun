@@ -45,10 +45,9 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
     - [x] Recover
     - [x] Reset Password
     - [x] Embark
-  - [ ] TopView (Schedule)
-  - [ ] Staff Manage
-  - [ ] Ship Manage
-  - [ ] Calculate Payroll
+  - [x] TopView (Schedule)
+  - [x] Staff Manage
+  - [x] Calculate Payroll
 
 ### Main Functionalities
 
