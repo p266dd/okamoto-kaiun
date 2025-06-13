@@ -239,7 +239,7 @@ export const CalendarView = () => {
         ))}
       </div>
       <div className="relative flex">
-        <div className="relative w-1/3">
+        <div className="relative w-1/3 sm:w-1/5 md:w-2/12">
           <Table>
             <TableHeader>
               <TableRow>
@@ -250,7 +250,7 @@ export const CalendarView = () => {
             </TableHeader>
             <TableBody>
               {processedStaffList.map((item) => {
-                if (item.type === "SEPARATOR") {
+                if ("type" in item && item.type === "SEPARATOR") {
                   return (
                     <TableRow key={item.id} className="h-4 bg-slate-200/70">
                       <TableCell className="font-semibold italic text-slate-700 pl-2 py-0.5 text-xs">
@@ -271,7 +271,7 @@ export const CalendarView = () => {
           </Table>
         </div>
 
-        <div className="relative w-2/3">
+        <div className="relative w-2/3 sm:w-4/5 md:w-10/12">
           <div
             onClick={async () => await loadPastDays()}
             className="absolute top-1/2 left-2 -translate-y-1/3 transition-all w-10 h-10 hover:h-1/2 bg-slate-600/30 hover:bg-slate-600 z-50 rounded-full flex items-center justify-center cursor-pointer"
@@ -335,7 +335,7 @@ export const CalendarView = () => {
               </TableHeader>
               <TableBody>
                 {processedStaffList.map((item) => {
-                  if (item.type === "SEPARATOR") {
+                  if ("type" in item && item.type === "SEPARATOR") {
                     return (
                       <TableRow key={item.id} className="h-4 bg-slate-200/70">
                         <TableCell
