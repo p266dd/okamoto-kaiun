@@ -17,23 +17,36 @@ export default function RecoverForm({
 }: {
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
 }) {
-  const [state, formAction, isPending] = useActionState(action, { error: null, success: null });
+  const [state, formAction, isPending] = useActionState(action, {
+    error: null,
+    success: null,
+  });
 
   return (
     <>
       <form action={formAction} className="p-6 md:p-8">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">Recover Password</h1>
+            <h1 className="text-2xl font-bold">パスワードを回復する</h1>
             <p className="text-muted-foreground text-balance"></p>
           </div>
           <div className="grid gap-3">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" placeholder="name@email.com" required />
+            <Label htmlFor="email">メール</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="name@email.com"
+              required
+            />
           </div>
 
-          <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
-            Send Recovery Code
+          <Button
+            variant={isPending ? "outline" : "default"}
+            type="submit"
+            className="w-full"
+          >
+            リカバリーコードを送信
           </Button>
 
           {state?.success && (

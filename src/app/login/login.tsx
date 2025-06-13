@@ -44,11 +44,11 @@ export default function LoginForm({
               alt="Okamoto Kaiun Logo"
               className="invert max-w-40 mt-4 mb-8 sm:hidden"
             />
-            <h1 className="text-2xl font-bold">Welcome!</h1>
+            <h1 className="text-2xl font-bold">ようこそ!</h1>
             <p className="text-muted-foreground text-balance"></p>
           </div>
           <div className="grid gap-3">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">メール</Label>
             <Input
               id="email"
               name="email"
@@ -59,13 +59,13 @@ export default function LoginForm({
           </div>
           <div className="grid gap-3">
             <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">パスワード</Label>
               <button
                 type="button"
                 onClick={() => router.push("/login?action=recover")}
                 className="ml-auto text-sm underline-offset-2 hover:underline"
               >
-                Forgot your password?
+                パスワードを回復します。
               </button>
             </div>
             <Input
@@ -81,13 +81,13 @@ export default function LoginForm({
             type="submit"
             className="w-full"
           >
-            Login {isPending && <Loader className="animate-spin" />}
+            ログイン {isPending && <Loader className="animate-spin" />}
           </Button>
           <Link
             className="text-primary"
             href={`${process.env.NEXT_PUBLIC_BASE_URL}/login?action=embark`}
           >
-            Are you a staff?
+            あなたはスタッフですか？
           </Link>
           {state?.error && (
             <Alert variant="destructive" className="bg-red-50">

@@ -20,7 +20,10 @@ export default function ResetPasswordForm({
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
   id: string | null;
 }) {
-  const [state, formAction, isPending] = useActionState(action, { error: null, success: null });
+  const [state, formAction, isPending] = useActionState(action, {
+    error: null,
+    success: null,
+  });
   const router = useRouter();
 
   return (
@@ -28,12 +31,12 @@ export default function ResetPasswordForm({
       <form action={formAction} className="p-6 md:p-8">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">New Password!</h1>
+            <h1 className="text-2xl font-bold">新しいパスワード！</h1>
             <p className="text-muted-foreground text-balance"></p>
           </div>
           <div className="grid gap-3">
             <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">パスワード</Label>
             </div>
             <input type="hidden" name="id" value={id ? id : ""} />
             <Input
@@ -48,7 +51,7 @@ export default function ResetPasswordForm({
 
           <div className="grid gap-3">
             <div className="flex items-center">
-              <Label htmlFor="confirmPassword">Re-Type Password</Label>
+              <Label htmlFor="confirmPassword">パスワードを認証する</Label>
             </div>
             <Input
               id="confirmPassword"
@@ -66,11 +69,15 @@ export default function ResetPasswordForm({
               onClick={() => router.push("/")}
               className="w-full"
             >
-              Go to Dashboard
+              ダッシュボードへ移動
             </Button>
           ) : (
-            <Button variant={isPending ? "outline" : "default"} type="submit" className="w-full">
-              Save New Password
+            <Button
+              variant={isPending ? "outline" : "default"}
+              type="submit"
+              className="w-full"
+            >
+              新しいパスワードを保存
             </Button>
           )}
 

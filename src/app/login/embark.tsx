@@ -60,7 +60,7 @@ export default function EmbarkForm({
           {!state?.staff ? (
             <>
               <div className="grid gap-3">
-                <Label htmlFor="code">Staff Code</Label>
+                <Label htmlFor="code">職員規定</Label>
                 <Input
                   id="code"
                   name="code"
@@ -75,7 +75,7 @@ export default function EmbarkForm({
                 type="submit"
                 className="w-full"
               >
-                Apply Code
+                コードを適用する
               </Button>
             </>
           ) : !state.success ? (
@@ -92,14 +92,14 @@ export default function EmbarkForm({
                       <div className="flex gap-4 items-center">
                         <Ship />
                         <div className="flex-grow">
-                          <p className="mb-2">Select a ship to proceed.</p>
+                          <p className="mb-2">続行するには船を選択してください。</p>
                           <Select onValueChange={(value) => setShip(value)}>
                             <SelectTrigger className="w-full">
                               <SelectValue placeholder="Select a ship" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Ships</SelectLabel>
+                                <SelectLabel>船</SelectLabel>
                                 {ships &&
                                   ships.map((ship) => (
                                     <SelectItem key={`ship-${ship.id}`} value={ship.id}>
@@ -115,7 +115,7 @@ export default function EmbarkForm({
                       <div className="flex gap-4 items-center">
                         <Ship />
                         <div className="flex-grow">
-                          <p className="mb-2">You are currently embarked.</p>
+                          <p className="mb-2">現在乗船中です。</p>
                         </div>
                       </div>
                     )}
@@ -136,7 +136,7 @@ export default function EmbarkForm({
                     size="lg"
                     className="flex-grow"
                   >
-                    {state.staff?.status ? "Disembark" : "Embark"}
+                    {state.staff?.status ? "下船" : "乗船"}
                   </Button>
                 </CardContent>
               </Card>
@@ -146,7 +146,7 @@ export default function EmbarkForm({
                 onClick={() => router.push("/login")}
                 className="w-full"
               >
-                Cancel
+                キャンセル
               </Button>
             </>
           ) : (
@@ -156,15 +156,14 @@ export default function EmbarkForm({
                   <CardTitle>
                     <p className="text-lg font-bold text-center">
                       <Ship className="inline-block mr-2" size={18} />
-                      {state.staff.status ? "Embarked" : "Disembarked"}
+                      {state.staff.status ? "乗船" : "下船"}
                     </p>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex gap-4 justify-between text-center">
                   <div>
-                    You have successfully{" "}
-                    {state.staff.status ? "embarked" : "disembarked"} the ship. Please
-                    contact your manager should you require assistance.
+                    無事に船に {state.staff.status ? "embarked" : "disembarked"}
+                    できました。ご不明な点がございましたら、マネージャーまでご連絡ください。
                   </div>
                 </CardContent>
               </Card>

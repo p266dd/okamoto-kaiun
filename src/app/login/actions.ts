@@ -46,14 +46,14 @@ export const LoginAction = async function (
 
   // Create schema.
   const loginSchema = z.object({
-    email: z.email({ message: "Invalid email address." }),
-    password: z.string().min(1, { message: "Password cannot be empty." }),
+    email: z.email({ message: "メールアドレスが無効です。" }),
+    password: z.string().min(1, { message: "パスワードは空にできません。" }),
   });
 
   // Validate and handle error.
   const validateSchema = loginSchema.safeParse(data);
   if (!validateSchema.success) {
-    return { error: `Credentials are invalid` };
+    return { error: "資格情報が無効です。" };
   }
 
   // Safe data.
@@ -66,7 +66,7 @@ export const LoginAction = async function (
     });
 
     if (result.error || !result.data) {
-      return { error: "User not found." };
+      return { error: "ユーザーが見つかりません。" };
     }
 
     const user = result.data as {
@@ -79,7 +79,7 @@ export const LoginAction = async function (
     // Compare password.
     const passwordsMatch = compareSync(password, user.password);
     if (!passwordsMatch) {
-      return { error: "Incorrect email or password." };
+      return { error: "メールアドレスまたはパスワードが間違っています。" };
     }
 
     // Create session.
@@ -89,10 +89,10 @@ export const LoginAction = async function (
       email: user.email,
     });
 
-    return { success: "Logged in successfully." };
+    return { success: "ログインに成功しました。" };
   } catch (error) {
     console.error("Login error: ", error);
-    return { error: "An unexpected error occurred during login." };
+    return { error: "ログイン中に予期しないエラーが発生しました。" };
   }
 };
 
@@ -110,13 +110,13 @@ export const RecoverAction = async function (
 
   // Create schema.
   const recoverSchema = z.object({
-    email: z.email({ message: "Invalid email address." }),
+    email: z.email({ message: "メールアドレスが無効です。" }),
   });
 
   // Validate and handle error.
   const validateSchema = recoverSchema.safeParse(data);
   if (!validateSchema.success) {
-    return { error: "Invalid email address." };
+    return { error: "メールアドレスが無効です。" };
   }
 
   // Safe data.
@@ -129,7 +129,7 @@ export const RecoverAction = async function (
     });
 
     if (result.error || !result.data) {
-      return { error: "User not found." };
+      return { error: "ユーザーが見つかりません。" };
     }
 
     const user = result.data as {
@@ -150,7 +150,7 @@ export const RecoverAction = async function (
     const updateUser = await update("user", { data: { token }, where: { id: user.id } });
 
     if (updateUser.error || !updateUser.data) {
-      return { error: "Could not update user." };
+      return { error: "ユーザー情報を更新できませんでした。" };
     }
 
     // Send token to email.
@@ -164,10 +164,10 @@ export const RecoverAction = async function (
     revalidatePath("/login");
 
     // Return message to be displayed.
-    return { success: "We've sen't you a link to reset your password." };
+    return { success: "パスワードをリセットするためのリンクを送信しました。" };
   } catch (error) {
     console.error("Recover error: ", error);
-    return { error: "An unexpected error occurred during recovery." };
+    return { error: "回復中に予期しないエラーが発生しました。" };
   }
 };
 
@@ -188,23 +188,23 @@ export const ResetAction = async function (
   const resetSchema = z.object({
     password: z
       .string()
-      .min(1, { message: "Password cannot be empty." })
-      .min(6, { message: "Password must be at least 6 characters." }),
+      .min(1, { message: "パスワードは空にできません。" })
+      .min(6, { message: "パスワードは6文字以上である必要があります。" }),
     confirmPassword: z
       .string()
-      .min(1, { message: "Password cannot be empty." })
-      .min(6, { message: "Password must be at least 6 characters." }),
+      .min(1, { message: "パスワードは空にできません。" })
+      .min(6, { message: "パスワードは6文字以上である必要があります。" }),
     id: z.uuid(),
   });
   const validateSchema = resetSchema.safeParse(data);
   if (!validateSchema.success) {
-    return { error: "Invalid passwords." };
+    return { error: "無効なパスワードです。" };
   }
 
   // Check if both passwords match.
   const { password, confirmPassword } = validateSchema.data;
   if (password !== confirmPassword) {
-    return { error: "Passwords do not match." };
+    return { error: "パスワードが一致しません。" };
   }
 
   // Hash password.
@@ -217,7 +217,7 @@ export const ResetAction = async function (
       where: { id: data.id },
     });
     if (updateUser.error || !updateUser.data) {
-      return { error: "Could not update user." };
+      return { error: "ユーザー情報を更新できませんでした。" };
     }
 
     const user = updateUser.data as {
@@ -237,10 +237,10 @@ export const ResetAction = async function (
     revalidatePath("/login");
 
     // Redirect user to top page.
-    return { success: "Password reset successfully." };
+    return { success: "パスワードが正常にリセットされました。" };
   } catch (error) {
     console.error("Reset error: ", error);
-    return { error: "An unexpected error occurred during password reset." };
+    return { error: "パスワードのリセット中に予期しないエラーが発生しました。" };
   }
 };
 
@@ -306,7 +306,7 @@ export const EmbarkAction = async function (
       );
       return {
         error:
-          "No active schedule found. Staff may already be disembarked or data is inconsistent.",
+          "有効なスケジュールが見つかりません。スタッフは既に下船しているか、データに不整合がある可能性があります。",
       };
     }
     const activeSchedule = scheduleResult.data[0] as { id: string };
@@ -360,9 +360,9 @@ export const EmbarkAction = async function (
 
   // Create data schema.
   const dataSchema = z.object({
-    code: z.string().length(6, { message: "Invalid code format." }),
+    code: z.string().length(6, { message: "無効なコード形式です。" }),
     status: z.boolean().nullable(),
-    ship: z.string().min(1, "Ship ID cannot be empty if provided.").nullable(),
+    ship: z.string().min(1, "船舶IDは空にできません。").nullable(),
   });
 
   // Validate data.
@@ -370,7 +370,7 @@ export const EmbarkAction = async function (
   if (!validateSchema.success) {
     const fieldErrors = validateSchema.error.flatten().fieldErrors;
     const errorMessages = Object.values(fieldErrors).flat().join(" ");
-    return { error: `Invalid data: ${errorMessages || "Validation failed."}` };
+    return { error: `無効なデータです: ${errorMessages || "検証に失敗しました。"}` };
   }
 
   const { code, status: newDesiredStatus, ship: shipIdFromForm } = validateSchema.data;
@@ -382,7 +382,7 @@ export const EmbarkAction = async function (
   });
 
   if (staffResult.error || !staffResult.data) {
-    return { error: "Staff not found." };
+    return { error: "スタッフが見つかりません。" };
   }
 
   const staff = staffResult.data as StaffWithShip;
@@ -400,13 +400,13 @@ export const EmbarkAction = async function (
     // Attempting to embark
     if (!shipIdFromForm) {
       return {
-        error: "Ship selection is required to embark.",
+        error: "乗船するには船舶の選択が必要です。",
         staff: getCurrentStaffUIState(staff, code),
       };
     }
     if (staff.status === true) {
       return {
-        error: "Staff is already embarked.",
+        error: "スタッフは既に他の船に乗船中です。",
         staff: getCurrentStaffUIState(staff, code),
       };
     }
@@ -415,7 +415,7 @@ export const EmbarkAction = async function (
     // Attempting to disembark (newDesiredStatus === false)
     if (staff.status === false) {
       return {
-        error: "Staff is already disembarked.",
+        error: "スタッフは既に下船しています。",
         staff: getCurrentStaffUIState(staff, code),
       };
     }
@@ -425,7 +425,7 @@ export const EmbarkAction = async function (
   if (!operationResult) {
     // Null means a Prisma/DB error occurred in helper
     return {
-      error: "Could not update staff due to an internal database error.",
+      error: "内部データベースエラーのため、スタッフ情報を更新できませんでした。",
       staff: getCurrentStaffUIState(staff, code),
     };
   }
@@ -441,7 +441,7 @@ export const EmbarkAction = async function (
 
   // Return staff object and success message.
   return {
-    success: "Thank you!",
+    success: "ありがとうございます！",
     staff: getCurrentStaffUIState(updatedStaff, code),
   };
 };
