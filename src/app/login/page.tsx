@@ -23,7 +23,7 @@ import {
 import { decrypt } from "@/lib/jwt";
 import { JWTPayload } from "jose";
 
-export function LoginPageLayout({
+const LoginPageLayout = function LoginPageLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -50,7 +50,7 @@ export function LoginPageLayout({
       </div>
     </div>
   );
-}
+};
 
 export default async function LoginPage(props: { searchParams: SearchParams }) {
   const getSearchParams = await props.searchParams;
