@@ -281,7 +281,7 @@ export const EmbarkAction = async function (
       console.error("Embark error:", result.error);
       return null;
     }
-    return result.data;
+    return result.data as StaffWithShip;
   }
 
   async function disembarkStaff(staffId: string) {
@@ -331,7 +331,7 @@ export const EmbarkAction = async function (
       return null;
     }
 
-    return result.data;
+    return result.data as StaffWithShip;
   }
 
   function getCurrentStaffUIState(
@@ -394,7 +394,7 @@ export const EmbarkAction = async function (
     };
   }
 
-  let operationResult: any = null;
+  let operationResult: StaffWithShip | { error: string } | null = null;
 
   if (newDesiredStatus === true) {
     // Attempting to embark

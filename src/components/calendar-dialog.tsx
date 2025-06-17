@@ -106,7 +106,7 @@ export default function CalendarDialog({
       desembark: values.desembark,
       scheduleId: values.scheduleId,
     })
-      .then((res) => {
+      .then(() => {
         toast.success("Changes have been saved.");
         setEdit(false);
         onScheduleUpdate(); // Call the callback to trigger refresh in parent.

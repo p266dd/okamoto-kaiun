@@ -89,12 +89,9 @@ export async function updateScheduleData(schedule: {
     revalidatePath("/payroll");
     revalidatePath("/");
     return updatedScheduleData;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Unexpected error in updateScheduleData:", error);
-    const errorMessage =
-      typeof error === "string"
-        ? error
-        : error.message || "An unexpected error occurred.";
+    const errorMessage = "An unexpected error occurred.";
     return Promise.reject(errorMessage);
   }
 }

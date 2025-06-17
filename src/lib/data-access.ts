@@ -19,7 +19,9 @@ type Model = keyof Omit<
   | "$extends"
 >;
 
-type DataAccessResult<T> = { data: T; error: null } | { data: null; error: string };
+export type DataAccessResult<T> =
+  | { data: T; error: null }
+  | { data: null; error: string };
 
 /**
  * Generates a user-friendly error message from a Prisma error and logs technical details.

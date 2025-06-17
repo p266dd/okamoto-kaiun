@@ -68,7 +68,7 @@ export default function StaffForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (edit) {
       updateStaff(edit.id, { ...values, salary: parseInt(values.salary.toString()) })
-        .then((res) => {
+        .then(() => {
           toast.success("Changes have been saved.");
           setEdit(null);
         })
@@ -83,7 +83,7 @@ export default function StaffForm({
     }
 
     createStaff({ ...values, salary: parseInt(values.salary.toString()) })
-      .then((res) => {
+      .then(() => {
         toast.success("New staff has been added.");
         form.reset();
       })

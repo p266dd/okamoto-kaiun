@@ -88,7 +88,7 @@ export default function StaffPage() {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
-                            deleteStaff(staff.id).then((_r) =>
+                            deleteStaff(staff.id).then(() =>
                               toast.success("Staff has been deleted.")
                             );
                             mutate("fetchStaff");

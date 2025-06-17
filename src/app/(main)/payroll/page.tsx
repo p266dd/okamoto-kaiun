@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { startOfMonth, endOfMonth, differenceInCalendarDays, max, min } from "date-fns";
-import { ja } from "date-fns/locale";
 import { fetchShips } from "@/app/login/actions";
 import { getScheduleData } from "@/app/(main)/actions/get-schedule";
 
@@ -92,7 +91,7 @@ export default function PayrollPage() {
   }, []);
 
   const sortedPayrollStaffList = useMemo(() => {
-    let sortableItems = [...payrollStaffList];
+    const sortableItems = [...payrollStaffList];
     if (sortConfig.key !== null) {
       sortableItems.sort((a, b) => {
         let valA: string | number = "";

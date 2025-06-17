@@ -67,11 +67,11 @@ export const CalendarView = () => {
     return eachDayOfInterval({ start: startDate, end: endDate });
   });
 
-  const lastDisplayedDay = useMemo(
-    () => displayedDays[displayedDays.length - 1],
-    [displayedDays]
-  );
-  const firstDisplayedDay = useMemo(() => displayedDays[0], [displayedDays]);
+  // const lastDisplayedDay = useMemo(
+  //   () => displayedDays[displayedDays.length - 1],
+  //   [displayedDays]
+  // );
+  // const firstDisplayedDay = useMemo(() => displayedDays[0], [displayedDays]);
 
   const triggerDataRefresh = () => {
     setRefreshKey((prevKey) => prevKey + 1);
