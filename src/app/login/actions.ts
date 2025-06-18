@@ -24,7 +24,7 @@ export interface ActionState {
   success?: string | null;
 }
 type StaffWithShip = {
-  id: string;
+  id?: string;
   firstName: string;
   lastName: string;
   status: boolean;
@@ -246,12 +246,7 @@ export const ResetAction = async function (
 
 // 4. Embark Action.
 export interface EmbarkActionState extends ActionState {
-  staff?: {
-    name: string;
-    ship: string;
-    code: string;
-    status: boolean | null;
-  } | null;
+  staff?: StaffWithShip | null;
 }
 
 export const EmbarkAction = async function (
@@ -261,7 +256,10 @@ export const EmbarkAction = async function (
   "use server";
 
   // Helper functions
-  async function embarkStaff(staffId: string, shipToEmbarkId: string) {
+  async function embarkStaff(
+    staffId: string,
+    shipToEmbarkId: string
+  ): Promise<StaffWithShip | null> {
     const result = await update("staff", {
       data: {
         status: true,
@@ -281,10 +279,14 @@ export const EmbarkAction = async function (
       console.error("Embark error:", result.error);
       return null;
     }
-    return result.data as StaffWithShip;
+    const data = result.data as StaffWithShip;
+    revalidatePath("/login");
+    return data;
   }
 
-  async function disembarkStaff(staffId: string) {
+  async function disembarkStaff(
+    staffId: string
+  ): Promise<StaffWithShip | { error: string }> {
     const scheduleResult = await findMany("schedule", {
       where: {
         staffId: staffId,
@@ -328,10 +330,16 @@ export const EmbarkAction = async function (
 
     if (result.error) {
       console.error("Disembark error:", result.error);
-      return null;
+      return {
+        error:
+          "有効なスケジュールが見つかりません。スタッフは既に下船しているか、データに不整合がある可能性があります。",
+      };
     }
 
-    return result.data as StaffWithShip;
+    const data = result.data as StaffWithShip;
+    revalidatePath("/login");
+
+    return data;
   }
 
   function getCurrentStaffUIState(
@@ -339,8 +347,12 @@ export const EmbarkAction = async function (
     inputCode: string
   ): EmbarkActionState["staff"] {
     return {
-      name: `${staffDb.firstName} ${staffDb.lastName}`,
-      ship: staffDb.ship?.name || "",
+      firstName: staffDb.firstName,
+      lastName: staffDb.lastName,
+      ship: {
+        id: staffDb.ship?.id || "",
+        name: staffDb.ship?.name || "",
+      },
       code: inputCode,
       status: staffDb.status,
     };
@@ -394,7 +406,7 @@ export const EmbarkAction = async function (
     };
   }
 
-  let operationResult: StaffWithShip | { error: string } | null = null;
+  let operationResult: StaffWithShip | null = null;
 
   if (newDesiredStatus === true) {
     // Attempting to embark
@@ -410,7 +422,7 @@ export const EmbarkAction = async function (
         staff: getCurrentStaffUIState(staff, code),
       };
     }
-    operationResult = await embarkStaff(staff.id, shipIdFromForm);
+    operationResult = await embarkStaff(staff.id || "", shipIdFromForm);
   } else {
     // Attempting to disembark (newDesiredStatus === false)
     if (staff.status === false) {
@@ -419,7 +431,12 @@ export const EmbarkAction = async function (
         staff: getCurrentStaffUIState(staff, code),
       };
     }
-    operationResult = await disembarkStaff(staff.id);
+    const result = await disembarkStaff(staff.id || "");
+    if ("error" in result) {
+      operationResult = null;
+    } else {
+      operationResult = result;
+    }
   }
 
   if (!operationResult) {
@@ -428,10 +445,6 @@ export const EmbarkAction = async function (
       error: "内部データベースエラーのため、スタッフ情報を更新できませんでした。",
       staff: getCurrentStaffUIState(staff, code),
     };
-  }
-  if (operationResult.error) {
-    // Helper returned an error object (e.g., no active schedule)
-    return { error: operationResult.error, staff: getCurrentStaffUIState(staff, code) };
   }
 
   const updatedStaff = operationResult as StaffWithShip;

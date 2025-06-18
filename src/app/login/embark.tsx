@@ -85,7 +85,7 @@ export default function EmbarkForm({
                   <CardTitle className="mb-3">
                     <p className="text-sm text-slate-500">Staff</p>
 
-                    <p className="text-lg">{state.staff?.name}</p>
+                    <p className="text-lg">{`${state.staff?.firstName} ${state.staff?.lastName}`}</p>
                   </CardTitle>
                   <CardDescription>
                     {!state.staff?.status ? (
