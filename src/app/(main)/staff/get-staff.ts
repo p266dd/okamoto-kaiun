@@ -16,6 +16,10 @@ export async function getStaff() {
       role: true,
       salary: true,
       code: true,
+      ship: true,
+    },
+    orderBy: {
+      lastName: "asc",
     },
   });
 

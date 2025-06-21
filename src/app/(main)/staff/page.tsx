@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -25,17 +24,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { EllipsisIcon, LoaderCircleIcon, PencilIcon, TrashIcon } from "lucide-react";
 
 export interface StaffInterface {
   id: string;
   firstName: string;
   lastName: string;
-  email: string;
+  email?: string;
   phone: string;
   role: string;
   salary: string;
   code: string;
+  ship: {
+    id: string;
+    name: string;
+  };
 }
 
 export default function StaffPage() {
@@ -43,8 +46,16 @@ export default function StaffPage() {
 
   const { data, error, isLoading } = useSWR("fetchStaff", getStaff);
 
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
+  if (error) return <div>Failed to load!</div>;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center gap-3">
+        <LoaderCircleIcon className="animate-spin" />
+        <span>Loading...</span>
+      </div>
+    );
+
+  console.log(data);
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -53,15 +64,14 @@ export default function StaffPage() {
       </div>
       <div className="px-6 sm:px-12 md:px-20 mb-12 sm:mb-20">
         <Table>
-          <TableCaption className="text-left">A list of all staff members.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Code</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Salary</TableHead>
+              <TableHead>名</TableHead>
+              <TableHead>電話番号</TableHead>
+              <TableHead>社員番号</TableHead>
+              <TableHead>船舶</TableHead>
+              <TableHead>所属</TableHead>
+              <TableHead>日当</TableHead>
               <TableHead className="text-right w-12"></TableHead>
             </TableRow>
           </TableHeader>
@@ -69,10 +79,10 @@ export default function StaffPage() {
             {data &&
               data.map((staff, i) => (
                 <TableRow key={i}>
-                  <TableCell>{`${staff.firstName} ${staff.lastName}`}</TableCell>
-                  <TableCell>{staff.email}</TableCell>
+                  <TableCell>{`${staff.lastName} ${staff.firstName}`}</TableCell>
                   <TableCell>{staff.phone}</TableCell>
                   <TableCell>{staff.code}</TableCell>
+                  <TableCell>{staff?.ship?.name}</TableCell>
                   <TableCell>{staff.role}</TableCell>
                   <TableCell>¥ {`${staff.salary}`}</TableCell>
                   <TableCell className="text-right w-12">

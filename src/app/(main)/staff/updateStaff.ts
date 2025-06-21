@@ -8,7 +8,7 @@ export async function updateStaff(
   values: {
     firstName: string;
     lastName: string;
-    email: string;
+    ship?: string | undefined;
     phone: string;
     role: string;
     salary: number;
@@ -18,6 +18,11 @@ export async function updateStaff(
   const result = await update("staff", {
     data: {
       ...values,
+      ship: {
+        connect: {
+          id: values.ship,
+        },
+      },
     },
     where: {
       id,

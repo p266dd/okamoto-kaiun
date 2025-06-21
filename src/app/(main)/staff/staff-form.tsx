@@ -29,15 +29,15 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { PencilIcon, PlusCircleIcon } from "lucide-react";
+import { SaveIcon, PlusCircleIcon } from "lucide-react";
 
 const formSchema = z.object({
   firstName: z.string().min(3, "Too short, should  be at least 3 characters").trim(),
   lastName: z.string().min(3, "Too short, should  be at least 3 characters").trim(),
-  email: z.email(),
+  ship: z.string().optional(),
   phone: z.string().min(8, "Too short, should  be at least 8 characters").trim(),
-  role: z.string().min(4, "Too short, should  be at least 4 characters").trim(),
-  salary: z.string().trim(),
+  role: z.string().trim(),
+  salary: z.string(),
   code: z.string().min(6, "Too short, should  be at least 6 characters").trim(),
 });
 
@@ -57,10 +57,10 @@ export default function StaffForm({
     values: {
       firstName: edit ? edit.firstName : "",
       lastName: edit ? edit.lastName : "",
-      email: edit ? edit.email : "",
+      ship: edit ? edit.ship.id : undefined,
       phone: edit ? edit.phone : "",
       role: edit ? edit.role : "",
-      salary: edit ? edit.salary : "",
+      salary: edit ? String(edit.salary) : "",
       code: edit ? edit.code : "",
     },
   });
@@ -101,12 +101,12 @@ export default function StaffForm({
         <div className="flex items-start gap-4 flex-wrap">
           <FormField
             control={form.control}
-            name="firstName"
+            name="lastName"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>First Name</FormLabel>
+                <FormLabel>姓</FormLabel>
                 <FormControl>
-                  <Input placeholder="Dhavidy" autoComplete="off" {...field} />
+                  <Input placeholder="Pires" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -115,12 +115,12 @@ export default function StaffForm({
 
           <FormField
             control={form.control}
-            name="lastName"
+            name="firstName"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Last Name</FormLabel>
+                <FormLabel>名</FormLabel>
                 <FormControl>
-                  <Input placeholder="Pires" autoComplete="off" {...field} />
+                  <Input placeholder="Dhavidy" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -131,24 +131,10 @@ export default function StaffForm({
         <div className="flex items-start gap-4 flex-wrap">
           <FormField
             control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="w-full sm:flex-1">
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="name@example.com" autoComplete="off" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="phone"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Phone</FormLabel>
+                <FormLabel>電話番号</FormLabel>
                 <FormControl>
                   <Input placeholder="090 1234 5678" autoComplete="off" {...field} />
                 </FormControl>
@@ -162,7 +148,7 @@ export default function StaffForm({
             name="code"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Code</FormLabel>
+                <FormLabel>社員番号</FormLabel>
                 <FormControl>
                   <Input placeholder="6 digit code" autoComplete="off" {...field} />
                 </FormControl>
@@ -175,10 +161,39 @@ export default function StaffForm({
         <div className="flex items-start gap-4">
           <FormField
             control={form.control}
+            name="ship"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>船舶</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose ship" {...field} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="b14fe6c3-4f4c-4492-9c1d-2dad1407db34">
+                      JFE N1 / 清丸
+                    </SelectItem>
+                    <SelectItem value="797a3a0c-52d8-4ff7-a36f-95bf41a640bc">
+                      JFE N3 / 第三清丸
+                    </SelectItem>
+                    <SelectItem value="92885bee-e9e4-4140-84b8-0bc618e4467d">
+                      扇鳳丸
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="role"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Role</FormLabel>
+                <FormLabel>所属</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
@@ -186,9 +201,9 @@ export default function StaffForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="chef">Chef</SelectItem>
-                    <SelectItem value="deck">Deck</SelectItem>
-                    <SelectItem value="engine">Engine</SelectItem>
+                    <SelectItem value="司厨部">司厨部</SelectItem>
+                    <SelectItem value="甲板部">甲板部</SelectItem>
+                    <SelectItem value="機関部">機関部</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage className="text-xs" />
@@ -201,7 +216,7 @@ export default function StaffForm({
             name="salary"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Salary</FormLabel>
+                <FormLabel>日当</FormLabel>
                 <FormControl>
                   <Input placeholder="¥ Hourly salary" autoComplete="off" {...field} />
                 </FormControl>
@@ -221,17 +236,19 @@ export default function StaffForm({
 
         <div className="flex items-center gap-5 my-9">
           {edit ? (
-            <Button type="submit" variant="success">
-              <PencilIcon /> Save Changes
-            </Button>
+            <>
+              <Button type="submit" variant="success">
+                <SaveIcon /> 変更を保存
+              </Button>
+              <Button variant="outline" type="button" onClick={() => setEdit(null)}>
+                キャンセル
+              </Button>
+            </>
           ) : (
             <Button type="submit">
-              <PlusCircleIcon /> Add New Staff
+              <PlusCircleIcon /> 追加
             </Button>
           )}
-          <Button variant="outline" type="button" onClick={() => setEdit(null)}>
-            Cancel
-          </Button>
         </div>
       </form>
     </Form>

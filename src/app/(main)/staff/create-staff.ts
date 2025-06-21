@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 export async function createStaff(values: {
   firstName: string;
   lastName: string;
-  email: string;
+  ship?: string | undefined;
   phone: string;
   role: string;
   salary: number;
@@ -16,7 +16,11 @@ export async function createStaff(values: {
     "staff",
     {
       ...values,
-      salary: parseInt(values.salary.toString()),
+      ship: {
+        connect: {
+          id: values.ship,
+        },
+      },
     },
     { select: { id: true } }
   );
