@@ -49,7 +49,7 @@ export async function getScheduleData(
     }
 
     const schedules = await findMany("schedule", {
-      where: scheduleWhereClause,
+      where: shipId === "all" ? undefined : scheduleWhereClause,
       include: {
         staff: true, // Include related staff info
         ship: true, // Include related ship info

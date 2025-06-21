@@ -16,7 +16,15 @@ import {
 } from "date-fns";
 import { ja } from "date-fns/locale";
 import CalendarDialog from "@/components/calendar-dialog";
-import { ChevronLeft, ChevronRight, Loader, RefreshCwIcon } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ChevronLeft,
+  ChevronRight,
+  Loader,
+  MinusCircleIcon,
+  PlusCircleIcon,
+  RefreshCwIcon,
+} from "lucide-react";
 import { getScheduleData } from "@/app/(main)/actions/get-schedule";
 
 // Shadcn
@@ -57,15 +65,16 @@ export const CalendarView = () => {
     []
   );
   const [refreshKey, setRefreshKey] = useState<number>(0); // State to trigger refresh.
-  const [selectedShipId, setSelectedShipId] = useState<string | null>(
-    "cmbsxmjz60000ycvb6i0b7j16"
-  );
+  const [selectedShipId, setSelectedShipId] = useState<string | null>("all");
 
   const [displayedDays, setDisplayedDays] = useState<Date[]>(() => {
     const startDate = subDays(startOfDay(today), 20);
     const endDate = addDays(startOfDay(today), 20);
     return eachDayOfInterval({ start: startDate, end: endDate });
   });
+
+  const [currentZoom, setCurrentZoom] = useState<number>(1);
+  const [recenter, setRecenter] = useState<number>(0);
 
   // const lastDisplayedDay = useMemo(
   //   () => displayedDays[displayedDays.length - 1],
@@ -77,7 +86,7 @@ export const CalendarView = () => {
     setRefreshKey((prevKey) => prevKey + 1);
   };
 
-  const processedStaffList: ProcessedStaffListItem[] = useMemo(() => {
+  const processedStaffList = useMemo(() => {
     // If there's no staff data at all, or no schedule data (meaning no relevant schedules for the current filters),
     // then no staff should be displayed in the context of those schedules.
     if (!staffData.length || !scheduleData.length) return [];
@@ -95,17 +104,14 @@ export const CalendarView = () => {
 
     if (!filteredStaffData.length) return [];
 
-    const staffByRole: Record<string, Staff[]> = filteredStaffData.reduce(
-      (acc, staff) => {
-        const role = staff.role || "deck"; // Default role if undefined.
-        if (!acc[role]) {
-          acc[role] = [];
-        }
-        acc[role].push(staff);
-        return acc;
-      },
-      {} as Record<string, Staff[]>
-    );
+    const staffByRole = filteredStaffData.reduce((acc, staff) => {
+      const role = staff.role || "deck"; // Default role if undefined.
+      if (!acc[role]) {
+        acc[role] = [];
+      }
+      acc[role].push(staff);
+      return acc;
+    }, {} as Record<string, Staff[]>);
 
     // Sort roles based on ROLE_ORDER, then alphabetically.
     const sortedRoles = Object.keys(staffByRole).sort((a, b) => {
@@ -119,12 +125,11 @@ export const CalendarView = () => {
     });
 
     const result: ProcessedStaffListItem[] = [];
-    sortedRoles.forEach((role, index) => {
+    sortedRoles.forEach((role) => {
+      result.push({ type: "SEPARATOR", id: `separator-${role}`, roleName: role });
       result.push(...staffByRole[role]);
-      if (index < sortedRoles.length - 1) {
-        result.push({ type: "SEPARATOR", id: `separator-${role}`, roleName: role });
-      }
     });
+
     return result;
   }, [staffData, scheduleData]);
 
@@ -138,6 +143,18 @@ export const CalendarView = () => {
     };
     loadShips();
   }, []);
+
+  // Zoom Control
+  useEffect(() => {
+    document.documentElement.style.zoom = String(currentZoom);
+  }, [currentZoom]);
+  function zoomIn() {
+    setCurrentZoom((prev) => prev + 0.2);
+  }
+
+  function zoomOut() {
+    setCurrentZoom((prev) => prev - 0.2);
+  }
 
   // Fetch schedule data when displayedDays changes
   useEffect(() => {
@@ -178,7 +195,7 @@ export const CalendarView = () => {
         });
       }
     }
-  }, []);
+  }, [recenter]);
 
   const loadPastDays = async () => {
     // Wait to load before loading more.
@@ -216,17 +233,27 @@ export const CalendarView = () => {
 
   return (
     <>
-      <div className="flex items-start justify-start md:justify-start gap-3 mb-9 px-2 sm:px-12">
-        <div>
-          <Button
-            className="cursor-pointer"
-            onClick={() => setRefreshKey((prevKey) => prevKey + 1)}
-            variant="default"
-          >
-            <RefreshCwIcon />
-          </Button>
-        </div>
-        <div className="flex flex-wrap gap-3">
+      <div className="flex items-center justify-between mb-9 px-2 sm:px-12">
+        <div className="flex justify-center md:justify-start flex-wrap gap-3">
+          <div>
+            <Button
+              className="cursor-pointer"
+              onClick={() => setRefreshKey((prevKey) => prevKey + 1)}
+              variant="default"
+            >
+              <RefreshCwIcon />
+            </Button>
+          </div>
+          <div>
+            <Button
+              className="cursor-pointer"
+              onClick={() => setSelectedShipId("all")}
+              variant={selectedShipId === "all" ? "default" : "outline"}
+            >
+              All
+            </Button>
+          </div>
+
           {availableShips.map((ship, i) => (
             <div key={`whip-${i}`}>
               <Button
@@ -238,10 +265,33 @@ export const CalendarView = () => {
             </div>
           ))}
         </div>
+
+        <div>
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => setRecenter((prev) => prev + 1)}
+          >
+            <span>今日</span>
+            <ArrowDownIcon />
+          </Button>
+        </div>
+
+        <div className="hidden md:flex items-center gap-4">
+          <Button variant="outline" type="button" onClick={() => zoomIn()}>
+            <span>Zoom</span>
+            <PlusCircleIcon />
+          </Button>
+
+          <Button variant="outline" type="button" onClick={() => zoomOut()}>
+            <span>Zoom</span>
+            <MinusCircleIcon />
+          </Button>
+        </div>
       </div>
       <div className="relative flex">
         <div className="relative w-1/3 sm:w-1/5 md:w-2/12">
-          <Table>
+          <Table className="mt-7">
             <TableHeader>
               <TableRow>
                 <TableHead className="h-16 bg-primary text-primary-foreground border-l border-r border-slate-200">
@@ -256,12 +306,12 @@ export const CalendarView = () => {
                     <TableRow key={item.id} className="h-4 bg-slate-200/70">
                       <TableCell className="font-semibold italic text-slate-700 pl-2 py-0.5 text-xs">
                         {/* You can display item.roleName here if desired, or leave it for a visual break */}
-                        <span className="text-transparent">{item.roleName}</span>
+                        <span className="">{item.roleName}</span>
                       </TableCell>
                     </TableRow>
                   );
                 }
-                const staff = item as Staff;
+                const staff = item as Partial<Staff>;
                 return (
                   <TableRow key={staff.id} className="hover:bg-gray-100 h-9">
                     <TableCell className="bg-blue-100 font-medium pr-4 sm:pr-12">{`${staff.firstName} ${staff.lastName}`}</TableCell>
@@ -302,11 +352,11 @@ export const CalendarView = () => {
           </div>
           <ScrollArea
             ref={scrollAreaRef}
-            className="w-full whitespace-nowrap border bg-background"
+            className="w-full whitespace-nowrap bg-background border-0"
             type="always"
           >
             <Table
-              className="min-w-full"
+              className="min-w-full mt-7"
               onMouseLeave={() => setHoveredColumnIndex(null)} // Reset hover when mouse leaves the table
             >
               <TableHeader>
@@ -314,9 +364,9 @@ export const CalendarView = () => {
                   {displayedDays.map((day, i) => {
                     let customStyle: string = "";
                     if (isSunday(day)) {
-                      customStyle = "bg-red-500 text-white";
+                      customStyle = "bg-[#f84b4f] text-white";
                     } else if (isSaturday(day)) {
-                      customStyle = "bg-blue-500 text-white";
+                      customStyle = "bg-[#2b7fff] text-white";
                     } else if (hoveredColumnIndex === i) {
                       customStyle = "bg-gray-100 text-foreground";
                     } else {
@@ -332,7 +382,7 @@ export const CalendarView = () => {
                         <div>{format(day, "EEE")}</div>
                         <div>{format(day, "MMM do")}</div>
                         {isSameDay(today, day) && (
-                          <span className="w-full bg-green-800 text-white rounded-full absolute -bottom-2 left-0 z-30">
+                          <span className="w-full bg-[#ecb011] text-white rounded-full absolute -top-7 left-0 z-30">
                             今日
                           </span>
                         )}
