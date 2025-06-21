@@ -15,7 +15,7 @@ import { Loader, Lock } from "lucide-react";
 // Types and Interfaces
 import { ActionState } from "./actions";
 
-import CompanyLogo from "@/assets/company_logo.png";
+import CompanyLogo from "@/assets/logo-color.png";
 
 export default function LoginForm({
   action,
@@ -42,7 +42,7 @@ export default function LoginForm({
             <Image
               src={CompanyLogo}
               alt="Okamoto Kaiun Logo"
-              className="invert max-w-40 mt-4 mb-8 sm:hidden"
+              className="max-w-40 mt-4 mb-8 sm:hidden"
             />
             <h1 className="text-2xl font-bold">ようこそ!</h1>
             <p className="text-muted-foreground text-balance"></p>
@@ -63,9 +63,9 @@ export default function LoginForm({
               <button
                 type="button"
                 onClick={() => router.push("/login?action=recover")}
-                className="ml-auto text-sm underline-offset-2 hover:underline"
+                className="ml-auto text-sm underline-offset-2 hover:underline text-slate-400"
               >
-                パスワードを回復します。
+                パスワードを忘れた方はこちら
               </button>
             </div>
             <Input
@@ -83,11 +83,8 @@ export default function LoginForm({
           >
             ログイン {isPending && <Loader className="animate-spin" />}
           </Button>
-          <Link
-            className="text-primary"
-            href={`${process.env.NEXT_PUBLIC_BASE_URL}/login?action=embark`}
-          >
-            あなたはスタッフですか？
+          <Link className="text-primary" href="/login?action=embark">
+            乗降船登録はこちら
           </Link>
           {state?.error && (
             <Alert variant="destructive" className="bg-red-50">

@@ -30,6 +30,7 @@ type StaffWithShip = {
   status: boolean;
   ship: { id: string; name: string } | null;
   code: string;
+  role: string;
 };
 
 // 1. Login Action.
@@ -353,6 +354,7 @@ export const EmbarkAction = async function (
         id: staffDb.ship?.id || "",
         name: staffDb.ship?.name || "",
       },
+      role: staffDb.role,
       code: inputCode,
       status: staffDb.status,
     };

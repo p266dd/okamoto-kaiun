@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 
 // Shadcn
@@ -7,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Info, Lock } from "lucide-react";
+import { ArrowLeftIcon, Info, Lock } from "lucide-react";
 
 // Types and Interfaces
 import { ActionState } from "./actions";
@@ -27,33 +28,55 @@ export default function RecoverForm({
       <form action={formAction} className="p-6 md:p-8">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">パスワードを回復する</h1>
+            <h1 className="text-2xl font-bold">新しいパスワードを設定する</h1>
             <p className="text-muted-foreground text-balance"></p>
           </div>
-          <div className="grid gap-3">
-            <Label htmlFor="email">メール</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="name@email.com"
-              required
-            />
-          </div>
+          {!state?.success && (
+            <>
+              <div className="grid gap-3">
+                <Label htmlFor="email">
+                  アカウントのメールアドレスを入力してください。
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="name@email.com"
+                  required
+                />
+              </div>
 
-          <Button
-            variant={isPending ? "outline" : "default"}
-            type="submit"
-            className="w-full"
-          >
-            リカバリーコードを送信
-          </Button>
+              <div className="flex flex-col gap-3">
+                <Button
+                  variant={isPending ? "outline" : "default"}
+                  type="submit"
+                  className="w-full"
+                >
+                  再設定リンクを送信
+                </Button>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/login" className="flex items-center gap-2">
+                    <ArrowLeftIcon /> ログイン画面へ戻る
+                  </Link>
+                </Button>
+              </div>
+            </>
+          )}
 
           {state?.success && (
-            <Alert className="bg-blue-50">
-              <Info />
-              <AlertTitle>{state.success}</AlertTitle>
-            </Alert>
+            <>
+              <Alert className="bg-blue-50">
+                <Info />
+                <AlertTitle>{state.success}</AlertTitle>
+              </Alert>
+              <div>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/login" className="flex items-center gap-2">
+                    <ArrowLeftIcon /> ログイン画面へ戻る
+                  </Link>
+                </Button>
+              </div>
+            </>
           )}
           {state?.error && (
             <Alert variant="destructive" className="bg-red-50">

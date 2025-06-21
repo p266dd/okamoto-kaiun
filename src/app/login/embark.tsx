@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
-import CompanyLogo from "@/assets/company_logo.png";
+import CompanyLogo from "@/assets/logo-color.png";
 
 // Shadcn
 import { Button } from "@/components/ui/button";
@@ -26,10 +26,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Lock, Ship } from "lucide-react";
+import { ArrowLeftIcon, Lock, Ship } from "lucide-react";
 
 // Types and Interfaces
 import { EmbarkActionState as ActionState } from "./actions";
+import Link from "next/link";
 
 export default function EmbarkForm({
   action,
@@ -51,7 +52,7 @@ export default function EmbarkForm({
       <form action={formAction} className="p-6 md:p-8">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center text-center">
-            <div className="w-32 mt-4 mb-9 mx-auto invert md:hidden">
+            <div className="w-32 mt-4 mb-9 mx-auto md:hidden">
               <Image src={CompanyLogo} alt="Okamoto Kaiun Logo" />
             </div>
             <p className="text-muted-foreground text-balance"></p>
@@ -60,7 +61,7 @@ export default function EmbarkForm({
           {!state?.staff ? (
             <>
               <div className="grid gap-3">
-                <Label htmlFor="code">職員規定</Label>
+                <Label htmlFor="code">社員番号</Label>
                 <Input
                   id="code"
                   name="code"
@@ -70,20 +71,27 @@ export default function EmbarkForm({
                   required
                 />
               </div>
-              <Button
-                variant={isPending ? "outline" : "default"}
-                type="submit"
-                className="w-full"
-              >
-                コードを適用する
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant={isPending ? "outline" : "default"}
+                  type="submit"
+                  className="w-full"
+                >
+                  登録画面へ進む
+                </Button>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/login" className="flex items-center gap-2">
+                    <ArrowLeftIcon /> 戻る
+                  </Link>
+                </Button>
+              </div>
             </>
           ) : !state.success ? (
             <>
               <Card>
                 <CardHeader>
                   <CardTitle className="mb-3">
-                    <p className="text-sm text-slate-500">Staff</p>
+                    <p className="text-sm text-slate-500">{state.staff?.role}</p>
 
                     <p className="text-lg">{`${state.staff?.firstName} ${state.staff?.lastName}`}</p>
                   </CardTitle>
@@ -146,7 +154,8 @@ export default function EmbarkForm({
                 onClick={() => router.push("/login")}
                 className="w-full"
               >
-                キャンセル
+                <ArrowLeftIcon />
+                戻る
               </Button>
             </>
           ) : (
@@ -156,14 +165,28 @@ export default function EmbarkForm({
                   <CardTitle>
                     <p className="text-lg font-bold text-center">
                       <Ship className="inline-block mr-2" size={18} />
-                      {state.staff.status ? "乗船" : "下船"}
+                      {state.staff.status ? "登録完了しました" : "登録完了しました。"}
                     </p>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex gap-4 justify-between text-center">
+                <CardContent className="flex gap-4 justify-center text-center">
                   <div>
-                    無事に船に {state.staff.status ? "embarked" : "disembarked"}
-                    できました。ご不明な点がございましたら、マネージャーまでご連絡ください。
+                    <p>
+                      {state.staff.status
+                        ? "安全な航海をお祈りします。"
+                        : "おつかれさまでした。"}
+                    </p>
+                    <div className="mt-5">
+                      <Button
+                        variant="outline"
+                        type="button"
+                        onClick={() => router.push("/login")}
+                        className="w-full"
+                      >
+                        <ArrowLeftIcon />
+                        元の画面に戻る
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
