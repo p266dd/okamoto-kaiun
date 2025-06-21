@@ -9,7 +9,6 @@ import { getScheduleData } from "@/app/(main)/actions/get-schedule";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -68,7 +67,7 @@ export default function PayrollPage() {
   // State to hold the processed list of staff with their worked days for the table.
   const [payrollStaffList, setPayrollStaffList] = useState<StaffPayrollRow[]>([]);
   const [payroll, setPayroll] = useState<PayrollForm>({
-    shipID: "cmbsxmjz60000ycvb6i0b7j16", // Default ship ID
+    shipID: "", // Default ship ID
     start: initialDefaultStart,
     finish: initialDefaultEnd,
   });
@@ -81,6 +80,11 @@ export default function PayrollPage() {
     const loadShips = async () => {
       try {
         const ships = await fetchShips();
+        if (ships === null || !ships) {
+          console.error("No ships found.");
+          return;
+        }
+        setPayroll((prev) => ({ ...prev, shipID: ships[0]?.id || "" }));
         setAvailableShips(ships || []);
       } catch (error) {
         console.error("Error fetching ships:", error);
@@ -134,6 +138,7 @@ export default function PayrollPage() {
           payroll.finish,
           payroll.shipID
         );
+
         if (!fetchedData || !fetchedData.staff || !fetchedData.schedules) {
           setPayrollStaffList([]);
           return;
@@ -208,10 +213,11 @@ export default function PayrollPage() {
               </div>
               <div>
                 <p className="text-lg">
-                  {availableShips.find((s) => s.id === payroll.shipID)?.name ||
+                  {(availableShips &&
+                    availableShips.find((s) => s.id === payroll.shipID)?.name) ||
                     "Loading..."}
                 </p>
-                <p className="text-xs text-gray-400">現在の視聴状況</p>
+                <p className="text-xs text-gray-400">選択中の船舶</p>
               </div>
             </CardContent>
           </Card>
@@ -219,7 +225,7 @@ export default function PayrollPage() {
 
         <div className="flex flex-wrap gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="shipSelect">Select Ship</Label>
+            <Label htmlFor="shipSelect">船舶</Label>
             <Select
               value={payroll.shipID}
               onValueChange={(value) => {
@@ -229,7 +235,7 @@ export default function PayrollPage() {
               }}
             >
               <SelectTrigger id="shipSelect" className="w-[180px]">
-                <SelectValue placeholder="Select a ship" />
+                <SelectValue placeholder="船舶" />
               </SelectTrigger>
 
               <SelectContent>
@@ -267,11 +273,6 @@ export default function PayrollPage() {
       </div>
       <div className="px-6 sm:px-12 md:px-20 mb-12 sm:mb-20">
         <Table>
-          <TableCaption className="text-left">
-            {sortedPayrollStaffList.length > 0
-              ? `選択した船舶および期間のスタッフのリスト。`
-              : `選択した条件に該当するスタッフデータはありません。`}
-          </TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>
@@ -290,7 +291,7 @@ export default function PayrollPage() {
                   onClick={() => requestSort("role")}
                   className="flex items-center gap-1 hover:text-primary"
                 >
-                  役割 <ArrowUpDownIcon className="h-3 w-3" />
+                  所属 <ArrowUpDownIcon className="h-3 w-3" />
                   <span className="text-sm text-blue-500">
                     {getSortIndicator("role")}
                   </span>
