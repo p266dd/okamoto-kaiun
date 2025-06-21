@@ -422,7 +422,7 @@ export const CalendarView = () => {
                               start: startOfDay(s.embark),
                               end: s.desembark
                                 ? startOfDay(s.desembark)
-                                : addDays(startOfDay(s.embark), 365 * 2), // Use a far future date if desembark is null
+                                : startOfDay(new Date(Date.now())),
                             })
                         ) as Schedule & {
                           staff: { firstName: string; lastName: string };
