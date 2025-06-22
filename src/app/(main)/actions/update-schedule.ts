@@ -55,7 +55,7 @@ export async function updateScheduleData(schedule: {
 
     // 2.5 Desembark exists, change staff status to false.
     if (schedule.desembark !== null) {
-      const staffUpdateResult = await update("staff", {
+      await update("staff", {
         data: {
           status: schedule.desembark === null ? true : false,
         },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { startOfDay, endOfDay, max, min, differenceInCalendarDays } from "date-fns";
 import { findMany } from "@/lib/data-access";
 
@@ -24,17 +24,12 @@ export default function TotalDaysPopover({
   staffId: string;
   shipId: string;
   days: number;
-  start: Date | null;
-  finish: Date | null;
+  start: Date;
+  finish: Date;
 }) {
   const [totalDaysSchedule, setTotalDaysSchedule] = useState<ProcessedSchedule[]>([]);
-  const [trigger, setTrigger] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  if (start === null || finish === null || staffId === "") {
-    return null;
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,6 +116,7 @@ export default function TotalDaysPopover({
       } catch (error) {
         setTotalDaysSchedule([]); // Clear data on error
         setError("Could not get data.");
+        console.error(error);
       } finally {
         setLoading(false); // Always set loading to false
       }
@@ -133,6 +129,10 @@ export default function TotalDaysPopover({
       setLoading(false);
     };
   }, [staffId, shipId, start, finish]);
+
+  if (start === null || finish === null || staffId === "") {
+    return null;
+  }
 
   return (
     <Popover>
