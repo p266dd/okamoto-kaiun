@@ -314,7 +314,7 @@ export const CalendarView = () => {
                 const staff = item as Partial<Staff>;
                 return (
                   <TableRow key={staff.id} className="hover:bg-gray-100 h-9">
-                    <TableCell className="bg-blue-100 font-medium pr-4 sm:pr-12">{`${staff.firstName} ${staff.lastName}`}</TableCell>
+                    <TableCell className="bg-blue-100 font-medium pr-4 sm:pr-12">{`${staff.lastName} ${staff.firstName}`}</TableCell>
                   </TableRow>
                 );
               })}
@@ -380,7 +380,7 @@ export const CalendarView = () => {
                         className={`relative w-[50px] h-16 text-center border-l border-r border-slate-200 ${customStyle}`}
                       >
                         <div>{format(day, "EEE")}</div>
-                        <div>{format(day, "MMM do")}</div>
+                        <div>{format(day, "M/d")}</div>
                         {isSameDay(today, day) && (
                           <span className="w-full bg-[#ecb011] text-white rounded-full absolute -top-7 left-0 z-30">
                             今日
