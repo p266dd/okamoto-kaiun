@@ -32,13 +32,13 @@ import { Button } from "@/components/ui/button";
 import { SaveIcon, PlusCircleIcon } from "lucide-react";
 
 const formSchema = z.object({
-  firstName: z.string().min(3, "Too short, should  be at least 3 characters").trim(),
-  lastName: z.string().min(3, "Too short, should  be at least 3 characters").trim(),
+  firstName: z.string().trim(),
+  lastName: z.string().trim(),
   ship: z.string().optional(),
-  phone: z.string().min(8, "Too short, should  be at least 8 characters").trim(),
+  phone: z.string().trim(),
   role: z.string().trim(),
   salary: z.string(),
-  code: z.string().min(6, "Too short, should  be at least 6 characters").trim(),
+  code: z.string().min(6, "6桁番号を設定してください").trim(),
 });
 
 import { StaffInterface } from "./page";
@@ -106,7 +106,7 @@ export default function StaffForm({
               <FormItem className="flex-1">
                 <FormLabel>姓</FormLabel>
                 <FormControl>
-                  <Input placeholder="Pires" autoComplete="off" {...field} />
+                  <Input placeholder="" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -120,7 +120,7 @@ export default function StaffForm({
               <FormItem className="flex-1">
                 <FormLabel>名</FormLabel>
                 <FormControl>
-                  <Input placeholder="Dhavidy" autoComplete="off" {...field} />
+                  <Input placeholder="" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -136,7 +136,7 @@ export default function StaffForm({
               <FormItem className="flex-1">
                 <FormLabel>電話番号</FormLabel>
                 <FormControl>
-                  <Input placeholder="090 1234 5678" autoComplete="off" {...field} />
+                  <Input placeholder="" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -150,7 +150,11 @@ export default function StaffForm({
               <FormItem className="flex-1">
                 <FormLabel>社員番号</FormLabel>
                 <FormControl>
-                  <Input placeholder="6 digit code" autoComplete="off" {...field} />
+                  <Input
+                    placeholder="6桁番号を設定してください"
+                    autoComplete="off"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -168,7 +172,7 @@ export default function StaffForm({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Choose ship" {...field} />
+                      <SelectValue placeholder="船舶を選択" {...field} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -197,7 +201,7 @@ export default function StaffForm({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Choose role" {...field} />
+                      <SelectValue placeholder="所属部署を選択" {...field} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -216,7 +220,7 @@ export default function StaffForm({
             name="salary"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>日当</FormLabel>
+                <FormLabel>日給</FormLabel>
                 <FormControl>
                   <Input placeholder="¥ Hourly salary" autoComplete="off" {...field} />
                 </FormControl>

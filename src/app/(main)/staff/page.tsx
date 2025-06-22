@@ -71,7 +71,7 @@ export default function StaffPage() {
               <TableHead>社員番号</TableHead>
               <TableHead>船舶</TableHead>
               <TableHead>所属</TableHead>
-              <TableHead>日当</TableHead>
+              <TableHead>日給</TableHead>
               <TableHead className="text-right w-12"></TableHead>
             </TableRow>
           </TableHeader>
