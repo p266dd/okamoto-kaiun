@@ -24,14 +24,18 @@ export default function TotalDaysPopover({
   staffId: string;
   shipId: string;
   days: number;
-  start: Date;
-  finish: Date;
+  start: Date | null;
+  finish: Date | null;
 }) {
   const [totalDaysSchedule, setTotalDaysSchedule] = useState<ProcessedSchedule[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (start === null || finish === null || staffId === "") {
+      return;
+    }
+
     const fetchData = async () => {
       // Clear previous state and set loading.
       setTotalDaysSchedule([]);
