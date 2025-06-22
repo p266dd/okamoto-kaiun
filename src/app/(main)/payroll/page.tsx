@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { startOfMonth, endOfMonth, differenceInCalendarDays, max, min } from "date-fns";
+import TotalDaysPopover from "./total-days-popover";
 import { fetchShips } from "@/app/login/actions";
 import { getScheduleData } from "@/app/(main)/actions/get-schedule";
 
@@ -136,7 +137,7 @@ export default function PayrollPage() {
         const fetchedData: FetchedScheduleData = await getScheduleData(
           payroll.start,
           payroll.finish,
-          payroll.shipID
+          payroll.shipID === "all" ? undefined : payroll.shipID
         );
 
         if (!fetchedData || !fetchedData.staff || !fetchedData.schedules) {
@@ -213,9 +214,11 @@ export default function PayrollPage() {
               </div>
               <div>
                 <p className="text-lg">
-                  {(availableShips &&
-                    availableShips.find((s) => s.id === payroll.shipID)?.name) ||
-                    "Loading..."}
+                  {payroll.shipID === "all"
+                    ? "全て"
+                    : (availableShips &&
+                        availableShips.find((s) => s.id === payroll.shipID)?.name) ||
+                      "Loading..."}
                 </p>
                 <p className="text-xs text-gray-400">選択中の船舶</p>
               </div>
@@ -239,6 +242,7 @@ export default function PayrollPage() {
               </SelectTrigger>
 
               <SelectContent>
+                <SelectItem value="all">全て</SelectItem>
                 {availableShips.map((ship) => (
                   <SelectItem key={ship.id} value={ship.id}>
                     {ship.name}
@@ -302,7 +306,7 @@ export default function PayrollPage() {
                   onClick={() => requestSort("salary")}
                   className="flex items-center gap-1 hover:text-primary"
                 >
-                  給料 <ArrowUpDownIcon className="h-3 w-3" />
+                  日給 <ArrowUpDownIcon className="h-3 w-3" />
                   <span className="text-sm text-blue-500">
                     {getSortIndicator("salary")}
                   </span>
@@ -327,8 +331,8 @@ export default function PayrollPage() {
               sortedPayrollStaffList.map((staffMember) => (
                 <TableRow key={staffMember.id}>
                   <TableCell>
-                    {`${staffMember.firstName || ""} ${
-                      staffMember.lastName || ""
+                    {`${staffMember.lastName || ""} ${
+                      staffMember.firstName || ""
                     }`.trim()}
                   </TableCell>
 
@@ -340,7 +344,15 @@ export default function PayrollPage() {
                       ? `¥ ${staffMember.salary.toLocaleString()}`
                       : "N/A"}
                   </TableCell>
-                  <TableCell className="text-right">{staffMember.workedDays}</TableCell>
+                  <TableCell className="text-right">
+                    <TotalDaysPopover
+                      staffId={staffMember.id}
+                      shipId={payroll.shipID}
+                      days={staffMember.workedDays}
+                      start={payroll.start}
+                      finish={payroll.finish}
+                    />
+                  </TableCell>
                   <TableCell className="text-right">
                     {`¥ ${staffMember.workedDays * Number(staffMember.salary)}`}
                   </TableCell>
