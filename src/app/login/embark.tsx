@@ -66,7 +66,7 @@ export default function EmbarkForm({
                   id="code"
                   name="code"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder=""
                   disabled={Boolean(state?.staff)}
                   required
                 />

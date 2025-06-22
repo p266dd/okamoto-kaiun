@@ -35,11 +35,13 @@ export async function updateScheduleData(schedule: {
     if (
       schedule.shipID !== undefined &&
       staffId &&
-      schedule.desembark === null &&
       schedule.shipID !== currentSchedule.shipId
     ) {
       const staffUpdateResult = await update("staff", {
-        data: { shipId: schedule.shipID }, // Update staff's shipId to the new shipID.
+        data: {
+          shipId: schedule.shipID,
+          status: schedule.desembark === null ? true : false,
+        }, // Update staff's shipId to the new shipID.
         where: { id: staffId },
       });
 
@@ -49,6 +51,16 @@ export async function updateScheduleData(schedule: {
           `Failed to update associated staff's ship: ${staffUpdateResult.error}`
         );
       }
+    }
+
+    // 2.5 Desembark exists, change staff status to false.
+    if (schedule.desembark !== null) {
+      const staffUpdateResult = await update("staff", {
+        data: {
+          status: schedule.desembark === null ? true : false,
+        },
+        where: { id: staffId },
+      });
     }
 
     // 3. Prepare payload for schedule update.
