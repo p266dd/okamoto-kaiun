@@ -303,7 +303,7 @@ export const EmbarkAction = async function (
       scheduleResult.data.length === 0
     ) {
       console.error(
-        "Active schedule not found for disembarkation for staff:",
+        "Active schedule not found for disembarkation:",
         staffId,
         scheduleResult.error
       );
@@ -374,9 +374,9 @@ export const EmbarkAction = async function (
 
   // Create data schema.
   const dataSchema = z.object({
-    code: z.string().length(6, { message: "無効なコード形式です。" }),
+    code: z.string().length(6, { message: "Wrong staff code." }),
     status: z.boolean().nullable(),
-    ship: z.string().min(1, "船舶IDは空にできません。").nullable(),
+    ship: z.string().min(1, "Please select a ship.").nullable(),
   });
 
   // Validate data.
@@ -384,7 +384,7 @@ export const EmbarkAction = async function (
   if (!validateSchema.success) {
     const fieldErrors = validateSchema.error.flatten().fieldErrors;
     const errorMessages = Object.values(fieldErrors).flat().join(" ");
-    return { error: `無効なデータです: ${errorMessages || "検証に失敗しました。"}` };
+    return { error: errorMessages };
   }
 
   const { code, status: newDesiredStatus, ship: shipIdFromForm } = validateSchema.data;
@@ -396,7 +396,7 @@ export const EmbarkAction = async function (
   });
 
   if (staffResult.error || !staffResult.data) {
-    return { error: "スタッフが見つかりません。" };
+    return { error: "Staff not found." };
   }
 
   const staff = staffResult.data as StaffWithShip;
