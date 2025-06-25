@@ -24,7 +24,6 @@ import {
   LoaderCircleIcon,
   MinusCircleIcon,
   PlusCircleIcon,
-  RefreshCwIcon,
 } from "lucide-react";
 import { getScheduleData } from "@/app/(main)/actions/get-schedule";
 
