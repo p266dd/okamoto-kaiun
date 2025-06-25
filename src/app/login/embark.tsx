@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeftIcon, Lock, Ship } from "lucide-react";
+import { ArrowLeftIcon, LoaderCircleIcon, Lock, Ship } from "lucide-react";
 
 // Types and Interfaces
 import { EmbarkActionState as ActionState } from "./actions";
@@ -77,6 +77,7 @@ export default function EmbarkForm({
                   type="submit"
                   className="w-full"
                 >
+                  {isPending ? <LoaderCircleIcon /> : null}
                   登録画面へ進む
                 </Button>
                 <Button variant="outline" className="w-full" asChild>
@@ -93,7 +94,7 @@ export default function EmbarkForm({
                   <CardTitle className="mb-3">
                     <p className="text-sm text-slate-500">{state.staff?.role}</p>
 
-                    <p className="text-lg">{`${state.staff?.firstName} ${state.staff?.lastName}`}</p>
+                    <p className="text-lg">{`${state.staff?.lastName} ${state.staff?.firstName}`}</p>
                   </CardTitle>
                   <CardDescription>
                     {!state.staff?.status ? (
@@ -103,7 +104,7 @@ export default function EmbarkForm({
                           <p className="mb-2">続行するには船を選択してください。</p>
                           <Select onValueChange={(value) => setShip(value)}>
                             <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select a ship" />
+                              <SelectValue placeholder="船舶を選択" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
@@ -124,6 +125,9 @@ export default function EmbarkForm({
                         <Ship />
                         <div className="flex-grow">
                           <p className="mb-2">現在乗船中です。</p>
+                          <p className="text-base">
+                            <strong>{state.staff?.ship?.name}</strong>
+                          </p>
                         </div>
                       </div>
                     )}
@@ -144,6 +148,7 @@ export default function EmbarkForm({
                     size="lg"
                     className="flex-grow"
                   >
+                    {isPending ? <LoaderCircleIcon /> : null}
                     {state.staff?.status ? "下船" : "乗船"}
                   </Button>
                 </CardContent>

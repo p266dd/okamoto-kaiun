@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
+import LinkLoadingIndicator from "@/components/link-loading-indicator";
 
 // Shadcn
 import { Button } from "@/components/ui/button";
@@ -49,30 +50,26 @@ export default function LoginForm({
           </div>
           <div className="grid gap-3">
             <Label htmlFor="email">メール</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="name@email.com"
-              required
-            />
+            <Input id="email" name="email" type="email" placeholder="" required />
           </div>
           <div className="grid gap-3">
             <div className="flex items-center">
               <Label htmlFor="password">パスワード</Label>
-              <button
-                type="button"
-                onClick={() => router.push("/login?action=recover")}
+              <Link
+                href="/login?action=recover"
                 className="ml-auto text-sm underline-offset-2 hover:underline text-slate-400"
               >
-                パスワードを忘れた方はこちら
-              </button>
+                <span className="flex items-center gap-2">
+                  <LinkLoadingIndicator />
+                  パスワードを忘れた方はこちら
+                </span>
+              </Link>
             </div>
             <Input
               id="password"
               name="password"
               type="password"
-              placeholder="••••••••"
+              placeholder=""
               required
             />
           </div>
@@ -83,8 +80,11 @@ export default function LoginForm({
           >
             ログイン {isPending && <Loader className="animate-spin" />}
           </Button>
-          <Link className="text-primary" href="/login?action=embark">
-            乗降船登録はこちら
+          <Link className="text-primary" href="/login?action=embark" prefetch={true}>
+            <span className="flex items-center gap-2">
+              <LinkLoadingIndicator />
+              乗降船登録はこちら
+            </span>
           </Link>
           {state?.error && (
             <Alert variant="destructive" className="bg-red-50">

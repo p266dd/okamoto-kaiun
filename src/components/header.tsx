@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LogoutAction } from "@/app/login/actions";
+import LinkLoadingIndicator from "./link-loading-indicator";
 
 // Assets
 import CompanyLogo from "@/assets/company_logo.png";
@@ -36,19 +37,34 @@ export default async function Header() {
               <NavigationMenuList className="gap-4">
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="/">カレンダー</Link>
+                    <Link href="/">
+                      <span className="flex items-center gap-1">
+                        <LinkLoadingIndicator />
+                        カレンダー
+                      </span>
+                    </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="/staff">スタッフ管理</Link>
+                    <Link href="/staff">
+                      <span className="flex items-center gap-1">
+                        <LinkLoadingIndicator />
+                        スタッフ管理
+                      </span>
+                    </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="/payroll">給与計算</Link>
+                    <Link href="/payroll">
+                      <span className="flex items-center gap-1">
+                        <LinkLoadingIndicator />
+                        給与計算
+                      </span>
+                    </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>

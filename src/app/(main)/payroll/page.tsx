@@ -68,7 +68,7 @@ export default function PayrollPage() {
   // State to hold the processed list of staff with their worked days for the table.
   const [payrollStaffList, setPayrollStaffList] = useState<StaffPayrollRow[]>([]);
   const [payroll, setPayroll] = useState<PayrollForm>({
-    shipID: "", // Default ship ID
+    shipID: "all", // Default ship ID
     start: initialDefaultStart,
     finish: initialDefaultEnd,
   });
@@ -85,7 +85,6 @@ export default function PayrollPage() {
           console.error("No ships found.");
           return;
         }
-        setPayroll((prev) => ({ ...prev, shipID: ships[0]?.id || "" }));
         setAvailableShips(ships || []);
       } catch (error) {
         console.error("Error fetching ships:", error);
@@ -123,6 +122,8 @@ export default function PayrollPage() {
     }
     return sortableItems;
   }, [payrollStaffList, sortConfig]);
+
+  console.log(payroll.shipID);
 
   useEffect(() => {
     const fetchAndProcessScheduleData = async () => {

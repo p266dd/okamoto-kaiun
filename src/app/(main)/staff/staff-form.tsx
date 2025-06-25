@@ -55,13 +55,13 @@ export default function StaffForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      firstName: edit ? edit.firstName : "",
-      lastName: edit ? edit.lastName : "",
-      ship: edit ? edit.ship.id : undefined,
-      phone: edit ? edit.phone : "",
-      role: edit ? edit.role : "",
-      salary: edit ? String(edit.salary) : "",
-      code: edit ? edit.code : "",
+      firstName: edit ? edit?.firstName : "",
+      lastName: edit ? edit?.lastName : "",
+      ship: edit ? edit?.ship?.id : "",
+      phone: edit ? edit?.phone : "",
+      role: edit ? edit?.role : "",
+      salary: edit ? String(edit?.salary) : "",
+      code: edit ? edit?.code : "",
     },
   });
 
@@ -222,7 +222,7 @@ export default function StaffForm({
               <FormItem>
                 <FormLabel>日給</FormLabel>
                 <FormControl>
-                  <Input placeholder="¥ Hourly salary" autoComplete="off" {...field} />
+                  <Input placeholder="¥" autoComplete="off" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs" />
               </FormItem>

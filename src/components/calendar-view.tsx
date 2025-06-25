@@ -21,6 +21,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader,
+  LoaderCircleIcon,
   MinusCircleIcon,
   PlusCircleIcon,
   RefreshCwIcon,
@@ -56,6 +57,7 @@ export const CalendarView = () => {
 
   const [isLoadingNext, setIsLoadingNext] = useState<boolean>(false);
   const [isLoadingPrev, setIsLoadingPrev] = useState<boolean>(false);
+  const [loadingSchedules, setLoadingSchedules] = useState<boolean>(false);
   const [hoveredColumnIndex, setHoveredColumnIndex] = useState<number | null>(null);
 
   // State for fetched data
@@ -159,6 +161,7 @@ export const CalendarView = () => {
   // Fetch schedule data when displayedDays changes
   useEffect(() => {
     const fetchData = async () => {
+      setLoadingSchedules(true);
       // Ensure we have a valid date range
       if (displayedDays.length === 0) return;
 
@@ -168,6 +171,8 @@ export const CalendarView = () => {
       const data = await getScheduleData(start, end, selectedShipId); // Pass selectedShipId
       setStaffData(data.staff);
       setScheduleData(data.schedules);
+
+      setLoadingSchedules(false);
     };
     fetchData();
   }, [displayedDays, refreshKey, selectedShipId]); // Re-fetch when the date range or refreshKey changes
@@ -234,16 +239,7 @@ export const CalendarView = () => {
   return (
     <>
       <div className="flex items-center justify-between mb-9 px-2 sm:px-12">
-        <div className="flex justify-center md:justify-start flex-wrap gap-3">
-          <div>
-            <Button
-              className="cursor-pointer"
-              onClick={() => setRefreshKey((prevKey) => prevKey + 1)}
-              variant="default"
-            >
-              <RefreshCwIcon />
-            </Button>
-          </div>
+        <div className="flex justify-start flex-wrap gap-3">
           <div>
             <Button
               className="cursor-pointer"
@@ -278,18 +274,26 @@ export const CalendarView = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="outline" type="button" onClick={() => zoomIn()}>
-            <span>Zoom</span>
-            <PlusCircleIcon />
-          </Button>
-
           <Button variant="outline" type="button" onClick={() => zoomOut()}>
             <span>Zoom</span>
             <MinusCircleIcon />
           </Button>
+
+          <Button variant="outline" type="button" onClick={() => zoomIn()}>
+            <span>Zoom</span>
+            <PlusCircleIcon />
+          </Button>
         </div>
       </div>
+
       <div className="relative flex">
+        {loadingSchedules && (
+          <div className="absolute h-full inset-0 -top-2 z-50 bg-white/80 border-4 flex justify-center my-8">
+            <span className="flex items-center gap-2">
+              <LoaderCircleIcon className="animate-spin" /> Loading...
+            </span>
+          </div>
+        )}
         <div className="relative w-1/3 sm:w-1/5 md:w-2/12">
           <Table className="mt-7">
             <TableHeader>
@@ -447,7 +451,18 @@ export const CalendarView = () => {
                             ? startOfDay(relevantSchedule.desembark)
                             : null;
 
-                          if (isSameDay(currentDayStart, scheduleStartDate)) {
+                          if (
+                            isSameDay(currentDayStart, scheduleStartDate) &&
+                            isSameDay(currentDayStart, scheduleEndDate || "")
+                          ) {
+                            cellContent = (
+                              <div className="absolute inset-0 flex items-center justify-end">
+                                <span className="absolute z-20 flex items-center justify-center top-0 right-0 w-full h-full">
+                                  <span className="rounded-full w-4 h-4 bg-primary text-primary-foreground text-xs" />
+                                </span>
+                              </div>
+                            );
+                          } else if (isSameDay(currentDayStart, scheduleStartDate)) {
                             cellContent = (
                               <div className="absolute inset-0 flex items-center justify-end">
                                 <span className="block w-1/2 h-1 bg-primary"></span>
@@ -489,6 +504,7 @@ export const CalendarView = () => {
                                   staff: {
                                     firstName: staff.firstName,
                                     lastName: staff.lastName,
+                                    role: staff.role,
                                   },
                                 }}
                                 onScheduleUpdate={triggerDataRefresh}

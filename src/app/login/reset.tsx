@@ -43,7 +43,7 @@ export default function ResetPasswordForm({
               id="password"
               name="password"
               type="password"
-              placeholder="••••••••"
+              placeholder=""
               disabled={Boolean(state?.success)}
               required
             />
@@ -57,7 +57,7 @@ export default function ResetPasswordForm({
               id="confirmPassword"
               name="confirmPassword"
               type="password"
-              placeholder="••••••••"
+              placeholder=""
               disabled={Boolean(state?.success)}
               required
             />

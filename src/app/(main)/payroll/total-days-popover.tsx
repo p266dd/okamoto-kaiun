@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 // Types
 import { Prisma } from "@/lib/prisma/generate";
+import { EllipsisIcon } from "lucide-react";
 type ProcessedSchedule = {
   shipName: string;
   days: number;
@@ -140,9 +141,14 @@ export default function TotalDaysPopover({
 
   return (
     <Popover>
-      <PopoverTrigger>{days}</PopoverTrigger>
+      <PopoverTrigger>
+        <span className="flex items-center gap-2">
+          <EllipsisIcon color="#cccccc" />
+          {days} 日
+        </span>
+      </PopoverTrigger>
       <PopoverContent>
-        <h4 className="text-base">Breakdown</h4>
+        <h4 className="text-base">勤務日数の内訳</h4>
         {loading === true ? (
           "Loading..."
         ) : (
@@ -156,12 +162,12 @@ export default function TotalDaysPopover({
                   className="flex items-center justify-between gap-3 text-sm"
                 >
                   <span>{schedule.shipName}</span>{" "}
-                  <span className="font-medium">{schedule.days} Days</span>
+                  <span className="font-medium">{schedule.days} 日</span>
                 </div>
               ))
             ) : (
               // Message if no schedules found
-              <div>No detailed schedule found for this period.</div>
+              <div>この期間の詳細なスケジュールは見つかりません</div>
             )}
           </div>
         )}

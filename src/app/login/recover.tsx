@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { ArrowLeftIcon, Info, Lock } from "lucide-react";
+import { ArrowLeftIcon, Info, LoaderCircleIcon, Lock } from "lucide-react";
 
 // Types and Interfaces
 import { ActionState } from "./actions";
@@ -37,13 +37,7 @@ export default function RecoverForm({
                 <Label htmlFor="email">
                   アカウントのメールアドレスを入力してください。
                 </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="name@email.com"
-                  required
-                />
+                <Input id="email" name="email" type="email" placeholder="" required />
               </div>
 
               <div className="flex flex-col gap-3">
@@ -52,6 +46,7 @@ export default function RecoverForm({
                   type="submit"
                   className="w-full"
                 >
+                  {isPending ? <LoaderCircleIcon className="animate-spin" /> : null}
                   再設定リンクを送信
                 </Button>
                 <Button variant="outline" className="w-full" asChild>

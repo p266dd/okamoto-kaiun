@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { ja } from "date-fns/locale";
+import { ja, enUS } from "date-fns/locale";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { fetchShips } from "@/app/login/actions";
@@ -74,6 +74,7 @@ export default function CalendarDialog({
     staff: {
       firstName: string;
       lastName: string;
+      role?: string;
     };
   };
   onScheduleUpdate: () => void;
@@ -137,7 +138,7 @@ export default function CalendarDialog({
         className="sm:max-w-[425px]"
       >
         <DialogHeader>
-          <DialogTitle className="text-primary">出席報告書</DialogTitle>
+          <DialogTitle className="text-primary">勤務詳細</DialogTitle>
           <DialogDescription className="sr-only">
             変更を編集して保存できます。
           </DialogDescription>
@@ -151,9 +152,11 @@ export default function CalendarDialog({
             />
             <div>
               <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                {relevantSchedule.staff.firstName + " " + relevantSchedule.staff.lastName}
+                {relevantSchedule.staff.lastName + " " + relevantSchedule.staff.firstName}
               </h3>
-              <div className="text-sm text-gray-400 mb-5">スタッフ</div>
+              <div className="text-sm text-gray-400 mb-5">
+                {relevantSchedule.staff?.role}
+              </div>
               <div className="flex flex-col gap-3 mb-4">
                 <FormField
                   control={form.control}
@@ -162,7 +165,7 @@ export default function CalendarDialog({
                     <FormItem className="flex-1">
                       <FormLabel>
                         <ShipIcon className="stroke-primary" />
-                        船で働
+                        乗船した船舶
                       </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
@@ -205,7 +208,7 @@ export default function CalendarDialog({
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "MMM do", { locale: ja })
+                                  format(field.value, "MMM do", { locale: enUS })
                                 ) : (
                                   <span>日付を選ぶ</span>
                                 )}
@@ -245,7 +248,7 @@ export default function CalendarDialog({
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "MMM do", { locale: ja })
+                                  format(field.value, "MM do", { locale: enUS })
                                 ) : (
                                   <span>日付を選ぶ</span>
                                 )}
@@ -271,7 +274,7 @@ export default function CalendarDialog({
               <div className="mb-8 max-h-[300px] overflow-y-auto">
                 <div className="flex items-center gap-6 mb-4">
                   <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">
-                    欠席日
+                    乗船中の休暇登録
                   </h3>
                   <Button size="sm" variant="outline" className="cursor-pointer">
                     <PlusCircleIcon /> 新たな不在
